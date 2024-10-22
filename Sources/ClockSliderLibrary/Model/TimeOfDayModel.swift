@@ -19,11 +19,11 @@ public struct TimeOfDayModel: Equatable, CustomDebugStringConvertible {
             return .am
         }
     }
-    public var quadrant: ClockQuadrant = .first
+//    public var quadrant: ClockQuadrant = .first
     
     public init(hour: Int, minute: Int) {
-        self.hour = hour
-        self.minute = minute
+        self.setHours(hour)
+        self.setMinutes(minute)
     }
     
     public var debugDescription: String {
