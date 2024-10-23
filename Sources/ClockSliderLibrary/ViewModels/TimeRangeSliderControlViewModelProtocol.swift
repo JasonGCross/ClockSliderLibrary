@@ -146,8 +146,8 @@ extension TimeRangeSliderControlViewModelProtocol {
   
     //TODO: find out what these hour clock models are doing before importing them from the other project
     mutating func setInitialDuration(minutes: Int) {
-        let safeMinutes = SingleHand12HourClockModel.convertMinutesToSafeMinutes(minutes, clockType: self.clockType)
-        let newQuadrant = ClockQuadrant.mapMinutesToQuandrant(safeMinutes, clockType: self.clockType)
+        let timeModel = TimeOfDayModel.timeModelFromMinutes(minutes)
+        let newQuadrant = ClockQuadrant.mapTimeToQuandrant(timeModel, clockType: self.clockType)
         self.finishTime.quadrant = newQuadrant
         self.finishTime.setMinutes(minutes)
         if (minutes >= oneRotation) {

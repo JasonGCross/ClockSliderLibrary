@@ -21,8 +21,8 @@ extension SingleHandedClockModelProtocol {
     var finishTimeInMinutes: Int {
         set {
             let safeMinutes = SingleHand12HourClockModel.convertMinutesToSafeMinutes(newValue, clockType: self.clockType)
-            
-            self.finishTime.quadrant = ClockQuadrant.mapMinutesToQuandrant(safeMinutes, clockType: self.clockType)
+            let timeModel = TimeOfDayModel.timeModelFromMinutes(safeMinutes)
+            self.finishTime.quadrant = ClockQuadrant.mapTimeToQuandrant(timeModel, clockType: self.clockType)
             
             // decide whether or not we are changing between a single or double clock rotation
             // note that this decision may happen at any clock position for either hand

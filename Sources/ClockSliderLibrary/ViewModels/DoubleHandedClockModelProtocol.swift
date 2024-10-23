@@ -12,11 +12,11 @@ extension DoubleHandedClockModelProtocol {
     var startTimeInMinutes: Int {
         set {
             let safeMinutes = SingleHand12HourClockModel.convertMinutesToSafeMinutes(newValue, clockType: self.clockType)
-            
+            let timeModel = TimeOfDayModel.timeModelFromMinutes(safeMinutes)
             
             // decide whether or not this single hand represents daytime or night time
             // note that this decision depends explicitly on the 12 o'clock position
-            let newQuadrant = ClockQuadrant.mapMinutesToQuandrant(safeMinutes, clockType: self.clockType)
+            let newQuadrant = ClockQuadrant.mapTimeToQuandrant(timeModel, clockType: self.clockType)
             if (newQuadrant != self.startTime.quadrant) {
                 if ((newQuadrant == .fourth) && (self.startTime.quadrant == .first)) {
                     self.startTime = self.startTime.addingTimeInterval(12 * 60 * 60)
@@ -46,10 +46,11 @@ extension DoubleHandedClockModelProtocol {
     var finishTimeInMinutes: Int {
         set {
             let safeMinutes = SingleHand12HourClockModel.convertMinutesToSafeMinutes(newValue, clockType: self.clockType)
+            let timeModel = TimeOfDayModel.timeModelFromMinutes(safeMinutes)
             
             // decide whether or not this single hand represents daytime or night time
             // note that this decision depends explicitly on the 12 o'clock position
-            let newQuadrant = ClockQuadrant.mapMinutesToQuandrant(safeMinutes, clockType: self.clockType)
+            let newQuadrant = ClockQuadrant.mapTimeToQuandrant(timeModel, clockType: self.clockType)
             if (newQuadrant != self.finishTime.quadrant) {
                 if ((newQuadrant == .fourth) && (self.finishTime.quadrant == .first)) {
                     self.finishTime = self.finishTime.addingTimeInterval(12 * 60 * 60)
