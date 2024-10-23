@@ -28,21 +28,21 @@ public enum ClockQuadrant {
         return ClockQuadrant.third
     }
     
-    static func mapMinutesToQuandrant(_ minutes: CGFloat, clockType: ClockType) -> ClockQuadrant {
+    static func mapMinutesToQuandrant(_ minutes: Int, clockType: ClockType) -> ClockQuadrant {
         
-        let oneRotation = CGFloat(clockType.rawValue * 60)
-        let halfRotation = CGFloat(clockType.rawValue * 30)
-        let quarterRotation = CGFloat(clockType.rawValue * 15)
-        let threeQuarterRotation = CGFloat(clockType.rawValue * 45)
+        let oneRotation = clockType.rawValue * 60
+        let halfRotation = clockType.rawValue * 30
+        let quarterRotation = clockType.rawValue * 15
+        let threeQuarterRotation = clockType.rawValue * 45
         
-        var safeMinutes: CGFloat = minutes
+        var safeMinutes: Int = minutes
         if (minutes >= oneRotation) {
-            safeMinutes = oneRotation * round(minutes / oneRotation)
+            safeMinutes = oneRotation * (minutes / oneRotation)
         }
         else if (minutes < 0) {
             var negativeSaveMinutes = -minutes
             if (negativeSaveMinutes >= oneRotation) {
-                negativeSaveMinutes = oneRotation * round(minutes / oneRotation)
+                negativeSaveMinutes = oneRotation * (minutes / oneRotation)
             }
             safeMinutes = oneRotation - negativeSaveMinutes
         }

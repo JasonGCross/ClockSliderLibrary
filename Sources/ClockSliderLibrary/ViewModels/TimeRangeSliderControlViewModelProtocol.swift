@@ -14,7 +14,7 @@ import Foundation
  Each hand moves in very fine movements, such that its angle can be used to
  determine a time in hours, minutes, seconds, and fraction of seconds.
  */
-public protocol BaseClockModel {
+public protocol TimeRangeSliderControlViewModelProtocol {
     var startTime: TimeOfDayModel {get set}
     var finishTime: TimeOfDayModel {get set}
     
@@ -22,10 +22,10 @@ public protocol BaseClockModel {
     var clockRotationCount: ClockRotationCount {get set}
     var maximumTimeDuration: Int? {get set}
     
-    var startTimeInMinutes: CGFloat {get set}
-    var finishTimeInMinutes: CGFloat {get set}
-    var startDayOrNightString: String {get set}
-    var finishDayOrNightString: String {get set}
+    var startTimeInMinutes: Int {get set}
+    var finishTimeInMinutes: Int {get set}
+    var startDayOrNightString: String {get}
+    var finishDayOrNightString: String {get}
     var timeRange: Int {get}
     
     mutating func advanceRotationCountIfAllowed()
@@ -34,10 +34,10 @@ public protocol BaseClockModel {
     mutating func setFinishDayOrNight(_ dayOrNight: DayOrNight) -> Void
     mutating func incrementDuration(minutes: Int)
     mutating func setInitialDuration(minutes: Int)
-    static func convertMinutesToSafeMinutes(_ unsafeMinutes: CGFloat, clockType: ClockType) -> CGFloat
+    static func convertMinutesToSafeMinutes(_ unsafeMinutes: Int, clockType: ClockType) -> Int
     
-    mutating func changeRotationCountIfNeeded(_ oldTimeRange: CGFloat, newTimeRange: CGFloat)
-    static func timeSpanBetween(_ startTime: CGFloat, finishTime:CGFloat) -> CGFloat
+    mutating func changeRotationCountIfNeeded(_ oldTimeRange: Int, newTimeRange: Int)
+    static func timeSpanBetween(_ startTime: Int, finishTime:Int) -> Int
     
     var test_startTimeOfDayModel: TimeOfDayModel {get}
     var test_finishTimeOfDayModel: TimeOfDayModel {get}
@@ -49,7 +49,7 @@ public protocol BaseClockModel {
     var threeQuarterRotation: Int {get}
 }
 
-extension BaseClockModel {
+extension TimeRangeSliderControlViewModelProtocol {
     var startDayOrNightString: String {
         return self.startTime.amORpm.rawValue
     }
@@ -64,7 +64,7 @@ extension BaseClockModel {
     var threeQuarterRotation: Int { self.clockType.rawValue * 45 }
     var almostFullRotation: Int { self.clockType.rawValue * 60 * (640/720) }
     
-    static func timeSpanBetween(_ startTime: CGFloat, finishTime:CGFloat) -> CGFloat {
+    static func timeSpanBetween(_ startTime: Int, finishTime:Int) -> Int {
         // we cannot just perform simple subtraction because we are dealing with a clock
         // meaning from 11:00pm to 3:00am crosses the day boundary,
         // which must be taken into account
@@ -73,8 +73,8 @@ extension BaseClockModel {
         
         var startTimeComponents = DateComponents()
         var finishTimeComponents = DateComponents()
-        startTimeComponents.minute = Int(round(startTime))
-        finishTimeComponents.minute = Int(round(finishTime))
+        startTimeComponents.minute = startTime
+        finishTimeComponents.minute = finishTime
         
         guard let startTimeDateObject = calendar.date(from: startTimeComponents),
             var finishTimeDateObject = calendar.date(from: finishTimeComponents) else {
@@ -92,7 +92,7 @@ extension BaseClockModel {
         }
         
         let secondDifference = finishTimeDateObject.timeIntervalSince(startTimeDateObject)
-        let selectedTime: CGFloat = CGFloat(round(secondDifference / 60.0))
+        let selectedTime: Int = Int(round(secondDifference / 60.0))
         
         return selectedTime
     }
@@ -124,35 +124,60 @@ extension BaseClockModel {
         let newHours = self.startTime.hour + 12
         self.finishTime.setHours(newHours)
     }
+    
+    var timeRange: Int {
+        get {
+            var selectedTime: Int = SingleHand12HourClockModel.timeSpanBetween(
+                self.startTime.minute,
+                finishTime: self.finishTime.minute)
+            switch (clockRotationCount) {
+            case .first:
+                if (selectedTime > oneRotation) {
+                    selectedTime -= oneRotation
+                }
+            case .second:
+                if selectedTime < oneRotation {
+                    selectedTime += oneRotation
+                }
+            }
+            return selectedTime
+        }
+    }
   
     //TODO: find out what these hour clock models are doing before importing them from the other project
-//    mutating func setInitialDuration(minutes: Int) {
-//        let safeMinutes = SingleHand12HourClockModel.convertMinutesToSafeMinutes(CGFloat(minutes), clockType: self.clockType)
-//        let newQuadrant = ClockQuadrant.mapMinutesToQuandrant(safeMinutes, clockType: self.clockType)
-//        self.finishTime.quadrant = newQuadrant
-//        self.finishTime.minutes = CGFloat(minutes)
-//        if (minutes >= oneRotation) {
-//            self.advanceRotationCountIfAllowed()
-//        }
-//    }
+    mutating func setInitialDuration(minutes: Int) {
+        let safeMinutes = SingleHand12HourClockModel.convertMinutesToSafeMinutes(minutes, clockType: self.clockType)
+        let newQuadrant = ClockQuadrant.mapMinutesToQuandrant(safeMinutes, clockType: self.clockType)
+        self.finishTime.quadrant = newQuadrant
+        self.finishTime.setMinutes(minutes)
+        if (minutes >= oneRotation) {
+            self.advanceRotationCountIfAllowed()
+        }
+    }
     
-    static func convertMinutesToSafeMinutes(_ unsafeMinutes: CGFloat, clockType: ClockType) -> CGFloat {
+    static func convertMinutesToSafeMinutes(_ unsafeMinutes: Int, clockType: ClockType) -> Int {
         let oneRotation = 60 * clockType.rawValue
-        var safeMinutes = unsafeMinutes.truncatingRemainder(dividingBy: CGFloat(oneRotation))
+        var safeMinutes = Double(unsafeMinutes).truncatingRemainder(dividingBy: CGFloat(oneRotation))
         if (safeMinutes < 0) {
             safeMinutes = CGFloat(oneRotation) + safeMinutes
         }
-        return safeMinutes
+        return Int(safeMinutes.rounded())
     }
     
-    internal mutating func changeRotationCountIfNeeded(_ oldTimeRange: CGFloat, newTimeRange: CGFloat) {
+    internal mutating func changeRotationCountIfNeeded(_ oldTimeRange: Int, newTimeRange: Int) {
         
         // the arc between start and finish is almost a complete circle, then changes over to a small circle
-        if ((oldTimeRange > CGFloat(almostFullRotation)) && (oldTimeRange < CGFloat(oneRotation)) && (newTimeRange >= 0) && (newTimeRange <= 60.0)) {
+        if ((oldTimeRange > almostFullRotation) &&
+            (oldTimeRange < oneRotation) &&
+            (newTimeRange >= 0) &&
+            (newTimeRange <= 60)) {
             self.advanceRotationCountIfAllowed()
         }
             // the arc between start and finish is almost zero, then changes over to an almost complete small circle
-        else if ((newTimeRange > 640.0) && (newTimeRange < CGFloat(oneRotation)) && (oldTimeRange >= 0) && (oldTimeRange <= 60.0)) {
+        else if ((newTimeRange > almostFullRotation) &&
+                 (newTimeRange < oneRotation) &&
+                 (oldTimeRange >= 0) &&
+                 (oldTimeRange <= 60)) {
             self.clockRotationCount.decrementCount()
         }
     }
@@ -166,3 +191,5 @@ extension BaseClockModel {
         return self.finishTime
     }
 }
+
+
