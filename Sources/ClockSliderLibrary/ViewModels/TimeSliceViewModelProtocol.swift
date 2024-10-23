@@ -14,7 +14,7 @@ import Foundation
  Each hand moves in very fine movements, such that its angle can be used to
  determine a time in hours, minutes, seconds, and fraction of seconds.
  */
-public protocol TimeRangeSliderControlViewModelProtocol {
+public protocol TimeSliceViewModelProtocol {
     var startTime: TimeOfDayModel {get set}
     var finishTime: TimeOfDayModel {get set}
     
@@ -49,7 +49,7 @@ public protocol TimeRangeSliderControlViewModelProtocol {
     var threeQuarterRotation: Int {get}
 }
 
-extension TimeRangeSliderControlViewModelProtocol {
+extension TimeSliceViewModelProtocol {
     var startDayOrNightString: String {
         return self.startTime.amORpm.rawValue
     }
@@ -127,7 +127,7 @@ extension TimeRangeSliderControlViewModelProtocol {
     
     var timeRange: Int {
         get {
-            var selectedTime: Int = SingleHand12HourClockModel.timeSpanBetween(
+            var selectedTime: Int = TimeSliceViewModel1Hand12HourClock.timeSpanBetween(
                 self.startTime.minute,
                 finishTime: self.finishTime.minute)
             switch (clockRotationCount) {
@@ -144,7 +144,6 @@ extension TimeRangeSliderControlViewModelProtocol {
         }
     }
   
-    //TODO: find out what these hour clock models are doing before importing them from the other project
     mutating func setInitialDuration(minutes: Int) {
         let timeModel = TimeOfDayModel.timeModelFromMinutes(minutes)
         let newQuadrant = ClockQuadrant.mapTimeToQuandrant(timeModel, clockType: self.clockType)

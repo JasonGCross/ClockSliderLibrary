@@ -1,5 +1,5 @@
 //
-//  DoubleHand24HourClockModel.swift
+//  DoubleHand12HourClockModel.swift
 //  clock_slider_view
 //
 //  Created by Jason Cross on 3/19/18.
@@ -9,15 +9,15 @@
 
 import Foundation
 
-struct DoubleHand24HourClockModel : TimeRangeSliderControlViewModelProtocol, DoubleHandedClockModelProtocol, TwentyFourHourClockModelProtocol {
-    
+struct TimeSliceViewModel2Hand12HourClock : TimeSliceViewModelProtocol, TimeSlice2HandClockProtocol {
+        
     internal var startTime: TimeOfDayModel = TimeOfDayModel()
     internal var finishTime: TimeOfDayModel = TimeOfDayModel()
     internal var clockRotationCount: ClockRotationCount = ClockRotationCount.first
     var maximumTimeDuration: Int?
     
-    var clockType: ClockType = ClockType.twentyFourHourClock
+    var clockType: ClockType = ClockType.twelveHourClock
     
-    
+    mutating func incrementDuration(minutes: Int) { }
 }
 

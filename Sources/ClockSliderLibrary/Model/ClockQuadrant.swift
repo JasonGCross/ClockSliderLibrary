@@ -52,31 +52,19 @@ public enum ClockQuadrant: String {
      */
     static func mapTimeToQuandrant(_ time: TimeOfDayModel, clockType: ClockType) -> ClockQuadrant {
         
-        let oneRotation = clockType.rawValue * 60
         let halfRotation = clockType.rawValue * 30
         let quarterRotation = clockType.rawValue * 15
         let threeQuarterRotation = clockType.rawValue * 45
         
         let totalMinutes = (time.hour * 60) + time.minute
-        var safeMinutes: Int = totalMinutes
-        if (totalMinutes >= oneRotation) {
-            safeMinutes = oneRotation * (totalMinutes / oneRotation)
-        }
-        else if (totalMinutes < 0) {
-            var negativeSaveMinutes = -totalMinutes
-            if (negativeSaveMinutes >= oneRotation) {
-                negativeSaveMinutes = oneRotation * (totalMinutes / oneRotation)
-            }
-            safeMinutes = oneRotation - negativeSaveMinutes
-        }
         
-        if (safeMinutes >= 0) && (safeMinutes < quarterRotation) {
+        if (totalMinutes >= 0) && (totalMinutes < quarterRotation) {
             return ClockQuadrant.first
         }
-        else if (safeMinutes >= quarterRotation) && (safeMinutes < halfRotation) {
+        else if (totalMinutes >= quarterRotation) && (totalMinutes < halfRotation) {
             return ClockQuadrant.second
         }
-        else if (safeMinutes >= halfRotation) && (safeMinutes < threeQuarterRotation) {
+        else if (totalMinutes >= halfRotation) && (totalMinutes < threeQuarterRotation) {
             return ClockQuadrant.third
         }
         else {

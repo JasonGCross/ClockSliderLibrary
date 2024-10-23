@@ -42,7 +42,7 @@ struct ClockQuadrantTests {
         (hours: 13 ,min: 21, expectedResult: ClockQuadrant.third.rawValue,  clockType: ClockType.twentyFourHourClock.rawValue),
         (hours: 22 ,min: 0,  expectedResult: ClockQuadrant.fourth.rawValue, clockType: ClockType.twentyFourHourClock.rawValue),
         (hours: 23 ,min: 59, expectedResult: ClockQuadrant.fourth.rawValue, clockType: ClockType.twentyFourHourClock.rawValue),
-    ]) func validateMappingMinutesToQuadrant(
+    ]) func validateMappingTimeToQuadrant(
         tuple: (hour: Int, min: Int, expectedResult: String, clockType: Int)
     ) {
         let model = TimeOfDayModel(hour: tuple.hour, minute: tuple.min)

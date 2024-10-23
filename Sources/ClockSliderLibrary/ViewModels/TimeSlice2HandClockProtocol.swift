@@ -5,13 +5,13 @@
 //  Created by Jason Cross on 2024-10-22.
 //
 
-protocol DoubleHandedClockModelProtocol: TimeRangeSliderControlViewModelProtocol {
+protocol TimeSlice2HandClockProtocol: TimeSliceViewModelProtocol {
 }
 
-extension DoubleHandedClockModelProtocol {
+extension TimeSlice2HandClockProtocol {
     var startTimeInMinutes: Int {
         set {
-            let safeMinutes = SingleHand12HourClockModel.convertMinutesToSafeMinutes(newValue, clockType: self.clockType)
+            let safeMinutes = TimeSliceViewModel1Hand12HourClock.convertMinutesToSafeMinutes(newValue, clockType: self.clockType)
             let timeModel = TimeOfDayModel.timeModelFromMinutes(safeMinutes)
             
             // decide whether or not this single hand represents daytime or night time
@@ -29,9 +29,9 @@ extension DoubleHandedClockModelProtocol {
             
             // decide whether or not we are changing between a single or double clock rotation
             // note that this decision may happen at any clock position for either hand
-            let oldTimeRange = SingleHand12HourClockModel.timeSpanBetween(self.startTime.minute,
+            let oldTimeRange = TimeSliceViewModel1Hand12HourClock.timeSpanBetween(self.startTime.minute,
                                                                           finishTime: self.finishTime.minute)
-            let newTimeRange = SingleHand12HourClockModel.timeSpanBetween(safeMinutes,
+            let newTimeRange = TimeSliceViewModel1Hand12HourClock.timeSpanBetween(safeMinutes,
                                                                           finishTime: self.finishTime.minute)
             self.changeRotationCountIfNeeded(oldTimeRange,
                                              newTimeRange: newTimeRange)
@@ -45,7 +45,7 @@ extension DoubleHandedClockModelProtocol {
     
     var finishTimeInMinutes: Int {
         set {
-            let safeMinutes = SingleHand12HourClockModel.convertMinutesToSafeMinutes(newValue, clockType: self.clockType)
+            let safeMinutes = TimeSliceViewModel1Hand12HourClock.convertMinutesToSafeMinutes(newValue, clockType: self.clockType)
             let timeModel = TimeOfDayModel.timeModelFromMinutes(safeMinutes)
             
             // decide whether or not this single hand represents daytime or night time
@@ -63,9 +63,9 @@ extension DoubleHandedClockModelProtocol {
             
             // decide whether or not we are changing between a single or double clock rotation
             // note that this decision may happen at any clock position for either hand
-            let oldTimeRange = SingleHand12HourClockModel.timeSpanBetween(self.startTime.minute,
+            let oldTimeRange = TimeSliceViewModel1Hand12HourClock.timeSpanBetween(self.startTime.minute,
                                                                           finishTime: self.finishTime.minute)
-            let newTimeRange = SingleHand12HourClockModel.timeSpanBetween(self.startTime.minute,
+            let newTimeRange = TimeSliceViewModel1Hand12HourClock.timeSpanBetween(self.startTime.minute,
                                                                           finishTime: safeMinutes)
             self.changeRotationCountIfNeeded(oldTimeRange,
                                              newTimeRange: newTimeRange)

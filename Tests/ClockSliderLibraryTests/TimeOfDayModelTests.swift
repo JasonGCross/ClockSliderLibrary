@@ -204,9 +204,8 @@ import Foundation
     }
     
     @Test(arguments: [
-        (min: 0     ,expectedHour: 0  ,expectedMin: 0  ),
-        (min: 0     ,expectedHour: 0  ,expectedMin: 0  ),
         // no overflow
+        (min: 0     ,expectedHour: 0  ,expectedMin: 0  ),
         (min: 10    ,expectedHour: 0  ,expectedMin: 10 ),
         // overflow
         (min: 60    ,expectedHour: 1  ,expectedMin: 0  ),
@@ -217,8 +216,8 @@ import Foundation
         // days of overflow
         (min: 1440  ,expectedHour: 0  ,expectedMin: 0  ),
         (min: 1441  ,expectedHour: 0  ,expectedMin: 1  ),
-        (min: 2880  ,expectedHour: 23 ,expectedMin: 0  ),
-        (min: 2882  ,expectedHour: 23 ,expectedMin: 2  ),
+        (min: 2820  ,expectedHour: 23 ,expectedMin: 0  ),
+        (min: 2822  ,expectedHour: 23 ,expectedMin: 2  ),
         (min: -1441 ,expectedHour: 23 ,expectedMin: 59 ),
     ]) func validateTimeOnlyFromMinutes(
         tuple: (min: Int, expectedHour: Int, expectedMin: Int)
@@ -241,5 +240,10 @@ import Foundation
     ) {
         let model = TimeOfDayModel.timeOnlyFromHours(tuple.hour)
         #expect(model.hour == tuple.expectedHour)
+    }
+    
+    @Test func validateDebugDescription() {
+        let model = TimeOfDayModel(hour: 1, minute: 2)
+        #expect(model.debugDescription != "")
     }
 }

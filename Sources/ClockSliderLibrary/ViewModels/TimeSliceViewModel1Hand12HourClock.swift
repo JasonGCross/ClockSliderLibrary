@@ -9,7 +9,7 @@
 
 import Foundation
 
-struct SingleHand12HourClockModel : TimeRangeSliderControlViewModelProtocol, SingleHandedClockModelProtocol {
+struct TimeSliceViewModel1Hand12HourClock : TimeSliceViewModelProtocol, TimeSlice1HandClockProtocol {
     
     internal var startTime: TimeOfDayModel = TimeOfDayModel()
     internal var finishTime: TimeOfDayModel = TimeOfDayModel()
