@@ -1,3 +1,10 @@
+//
+//  TimeOfDayModelTests.swift
+//  ClockSliderLibrary
+//
+//  Created by Jason Cross on 2024-10-23.
+//
+
 import Testing
 import Foundation
 @testable import ClockSliderLibrary
