@@ -12,14 +12,6 @@ public struct TimeOfDayModel: Equatable, CustomDebugStringConvertible {
     private(set) var hour: Int = 0
     private(set) var minute: Int = 0
     
-    public var amORpm: DayOrNight {
-        if hour >= 12 {
-            return .pm
-        } else {
-            return .am
-        }
-    }
-    
     public init(hour: Int = 0, minute: Int = 0) {
         self.setHours(hour)
         self.setMinutes(minute)
@@ -34,6 +26,21 @@ public struct TimeOfDayModel: Equatable, CustomDebugStringConvertible {
     public static func == (lhs: TimeOfDayModel, rhs: TimeOfDayModel) -> Bool {
         let value = (lhs.hour == rhs.hour) && (lhs.minute == rhs.minute)
         return value
+    }
+}
+
+extension TimeOfDayModel {
+    
+    public var totalMinutes: Int {
+        hour * 60 + minute
+    }
+    
+    public var amORpm: DayOrNight {
+        if hour >= 12 {
+            return .pm
+        } else {
+            return .am
+        }
     }
     
     public static var now: TimeOfDayModel {
@@ -99,6 +106,43 @@ public struct TimeOfDayModel: Equatable, CustomDebugStringConvertible {
         let hourComponents = TimeOfDayModel.timeOnlyFromHours(totalHours)
         
         return TimeOfDayModel(hour: hourComponents.hour, minute: minutesComponents.minute)
+    }
+    
+    /**
+     Meant to be used during a slide motion, where the change in the time of day
+     is normally very small.
+     For example, if the current time is 3:00pm, and the slider changes one minute,
+     the new time must be 3:01pm.
+     The problem is that the newTotalMinutes will always represent a time between midnight
+     and noon (i.e. 0 hours up to 12 hours), so the above new time might look like 3:01am,
+     instead of the reality of 3:01pm.
+     
+     This function takes a raw total number of minutes and makes an appropriate adjustment
+     to this model so that it accurately reflects the new time.
+     */
+    public mutating func adjustMinutesSlightly(newTotalMinutes: Int) {
+        // get rid of the complication of dealing with a midnight boundary
+        let minutesInHalfADay = 12 * 60
+        let timeToAdd = 5 * minutesInHalfADay
+        let currentTotalMinutes = self.totalMinutes
+        let currentMinutesWithPadding = currentTotalMinutes + timeToAdd
+        let newMinutesWithPadding = newTotalMinutes + timeToAdd
+        
+        // make sure that these totals agree within reason
+        let difference = currentMinutesWithPadding - newMinutesWithPadding
+        let expectedMaxChangeInMinutes = 120
+        let threshold = minutesInHalfADay - expectedMaxChangeInMinutes
+        guard abs(Double(difference)) > Double(threshold) else {
+            self = TimeOfDayModel.timeModelFromMinutes(newTotalMinutes)
+            return
+        }
+        
+        // need to either add 24 hours or subtract 24 hours
+        let unitsToAdd = (Double(difference) / Double(minutesInHalfADay)).rounded()
+        let minutesToAdd = Int(unitsToAdd) * minutesInHalfADay
+        let adjustedMinutes = newTotalMinutes + minutesToAdd
+        self = TimeOfDayModel.timeModelFromMinutes(adjustedMinutes)
+        return
     }
     
     public func timeIntervalSince(_ otherTimeModel: TimeOfDayModel) -> TimeInterval {

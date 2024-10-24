@@ -130,15 +130,13 @@ public struct SliderControlViewModel {
         }
     }
     
-    public mutating func translateTouchLocationToSliderCenterPoint(_ touchLocation: CGPoint) -> CGPoint? {
+    internal func translateTouchLocationToSliderCenterPoint(_ touchLocation: CGPoint) -> CGPoint? {
         
         // 1. determine by how much the user has dragged
         guard let bestInterceptPoint = self.closestPointOnSliderCenterTrack(touchLocation) else {
-            self.previousTouchPoint = touchLocation
             return nil
         }
-        
-        self.previousTouchPoint = touchLocation
+
         var mappedIntercept = self.mapScreenPointToSliderCenterTrackPoint(bestInterceptPoint)
         if (mappedIntercept.x > self.radiusClockCenterToSliderTrackCenter) {
             mappedIntercept = CGPoint(x: self.radiusClockCenterToSliderTrackCenter, y: mappedIntercept.y)
@@ -156,7 +154,7 @@ public struct SliderControlViewModel {
         return mappedIntercept
     }
     
-    public func translateSliderCenterPointToAngle(_ cartesianCoordinatePoint: CGPoint) -> CGFloat {
+    internal func translateSliderCenterPointToAngle(_ cartesianCoordinatePoint: CGPoint) -> CGFloat {
         let angle = self.clockFaceAngle(cartesianCoordinatePoint)
         if (angle.isNaN) {
             // try this calculation again
@@ -167,27 +165,21 @@ public struct SliderControlViewModel {
         return angle
     }
     
-    public func translateAngleToClockFaceTime(_ angle: CGFloat) -> ClockFaceTime {
+    internal func minutesForClockFaceAngle(_ angle: CGFloat) -> Int {
         // angle = (minutes / ticksPerRevolution) * 2 * Pi
         // angle / (2 * Pi) = (minutes / ticksPerRevolution)
         // minutes = (angle * ticksPerRevolution) / (2 * Pi)
         let rawMinutes = (angle * CGFloat(self.ticksPerRevolution)) / CGFloat(2 * Double.pi)
         let numberOfTicks: Int = Int(rawMinutes)
         
-        // 4. Clock Face Time: e.g. 1:30am = 90 minutes
-        // The angle is converted to raw minutes which the hour hand should lie on the clock face.
-        // This position of the hour hand is different between 12-hour clocks and 24-hour clocks.
-        // For 12-hour clocks, this time can only be a number between 0 minutes and 720 minutes (12 * 60).
-        // Both AM and PM will show the same clock face time.
-        let clockFaceTime: ClockFaceTime = ClockFaceTime(minutes: numberOfTicks, amORpm: DayOrNight.am, clockType: self.clockType)
-        return clockFaceTime
+        return numberOfTicks
     }
     
     public mutating func adjustStartAndEndTimesDuringTracking(location: CGPoint, highlightedKnob: HighlightedKnob) {
         //1. Screen Point:  e.g. (x=200, y=75)
         //The user's drag is reported in absolute screen coordinates.
         let screenPoint: CGPoint = location
-        
+        self.previousTouchPoint = screenPoint
         
         //2. Slider Centre Point: e.g. (x=60, y=60)
         //The screen point is converted to a point along the centre of the slider track,
@@ -201,14 +193,14 @@ public struct SliderControlViewModel {
         //the angle between the vertical line (12 o'clock) and the intercept to the slider centre point.
         let angle = self.clockFaceAngle(sliderCenterPoint)
         
-        //5. Clock Face Time: e.g. 1:30am = 90 minutes
+        //4. Raw Minutes on Clock Face: e.g. 90 minutes
         //The angle is converted to raw minutes which the hour hand should lie on the clock face.
         //This position of the hour hand is different between 12-hour clocks and 24-hour clocks.
         //For 12-hour clocks, this time can only be a number between 0 minutes and 720 minutes (12 * 60).
         //Both AM and PM will show the same clock face time.
-        let clockFaceTime = self.translateAngleToClockFaceTime(angle)
+        let rawMinutes = self.minutesForClockFaceAngle(angle)
         
-        //6. Time of Day Time: e.g. 1:30pm, or 13:30 = 810 minutes
+        //5. Time of Day Time: e.g. 1:30pm, or 13:30 = 810 minutes
         //For a 24-hour clock, the time of day is always the same as the clock face time.
         //But for a 12-hour clock, the time of day is only the same as the clock face time before noon.
         //After noon, the actual time of day is 12 hours greater.
@@ -218,9 +210,31 @@ public struct SliderControlViewModel {
         //is required or not.
         switch highlightedKnob {
         case .start:
-            self.sliderViewModel.changeStartTimeOfDayUsingClockFaceTime(clockFaceTime)
+            self.sliderViewModel.changeStartTimeOfDayUsingClockFaceTime(rawMinutes)
         case .finish:
-            self.sliderViewModel.changeFinishTimeOfDayUsingClockFaceTime(clockFaceTime)
+            self.sliderViewModel.changeFinishTimeOfDayUsingClockFaceTime(rawMinutes)
         }
+    }
+}
+
+extension SliderControlViewModel {
+    
+    //MARK: - testing
+    //*************************************************************************
+    
+    func test_mapScreenPointToSliderCenterTrackPoint(_ screenPoint: CGPoint) -> CGPoint {
+        return mapScreenPointToSliderCenterTrackPoint(screenPoint)
+    }
+    
+    func test_translateTouchLocationToSliderCenterPoint(_ touchLocation: CGPoint) -> CGPoint? {
+        return translateTouchLocationToSliderCenterPoint(touchLocation)
+    }
+    
+    func test_clockFaceAngle(_ point: CGPoint) -> CGFloat {
+        return self.clockFaceAngle(point)
+    }
+
+    func test_minutesForClockFaceAngle(_ angle: CGFloat) -> Int {
+        return self.minutesForClockFaceAngle(angle)
     }
 }

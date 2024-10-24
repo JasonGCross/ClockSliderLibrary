@@ -40,4 +40,32 @@ struct ClockQuadrantTests {
         let result = ClockQuadrant.mapPointToQuadrant(point)
         #expect(result.rawValue == tuple.expectedResult)
     }
+    
+    @Test(arguments:[
+        // 12-hour clock
+        (hours: 0  ,min: 13, expectedResult: ClockQuadrant.first.rawValue,  clockType: ClockType.twelveHourClock.rawValue),
+        (hours: 2  ,min: 21, expectedResult: ClockQuadrant.first.rawValue,  clockType: ClockType.twelveHourClock.rawValue),
+        (hours: 5  ,min: 33, expectedResult: ClockQuadrant.second.rawValue, clockType: ClockType.twelveHourClock.rawValue),
+        (hours: 3  ,min: 1,  expectedResult: ClockQuadrant.second.rawValue, clockType: ClockType.twelveHourClock.rawValue),
+        (hours: 6  ,min: 13, expectedResult: ClockQuadrant.third.rawValue,  clockType: ClockType.twelveHourClock.rawValue),
+        (hours: 8  ,min: 21, expectedResult: ClockQuadrant.third.rawValue,  clockType: ClockType.twelveHourClock.rawValue),
+        (hours: 9  ,min: 0,  expectedResult: ClockQuadrant.fourth.rawValue, clockType: ClockType.twelveHourClock.rawValue),
+        (hours: 11 ,min: 59, expectedResult: ClockQuadrant.fourth.rawValue, clockType: ClockType.twelveHourClock.rawValue),
+        // 24-hour clock
+        (hours: 0  ,min: 13, expectedResult: ClockQuadrant.first.rawValue,  clockType: ClockType.twentyFourHourClock.rawValue),
+        (hours: 5  ,min: 21, expectedResult: ClockQuadrant.first.rawValue,  clockType: ClockType.twentyFourHourClock.rawValue),
+        (hours: 6  ,min: 33, expectedResult: ClockQuadrant.second.rawValue, clockType: ClockType.twentyFourHourClock.rawValue),
+        (hours: 11 ,min: 59, expectedResult: ClockQuadrant.second.rawValue, clockType: ClockType.twentyFourHourClock.rawValue),
+        (hours: 12 ,min: 13, expectedResult: ClockQuadrant.third.rawValue,  clockType: ClockType.twentyFourHourClock.rawValue),
+        (hours: 13 ,min: 21, expectedResult: ClockQuadrant.third.rawValue,  clockType: ClockType.twentyFourHourClock.rawValue),
+        (hours: 22 ,min: 0,  expectedResult: ClockQuadrant.fourth.rawValue, clockType: ClockType.twentyFourHourClock.rawValue),
+        (hours: 23 ,min: 59, expectedResult: ClockQuadrant.fourth.rawValue, clockType: ClockType.twentyFourHourClock.rawValue),
+    ]) func validateMappingMinutesToQuadrant(
+        tuple: (hour: Int, min: Int, expectedResult: String, clockType: Int)
+    ) {
+        let model = TimeOfDayModel(hour: tuple.hour, minute: tuple.min)
+        let type = ClockType(rawValue: tuple.clockType)!
+        let result = ClockQuadrant.mapTimeToQuandrant(model, clockType: type)
+        #expect(result.rawValue == tuple.expectedResult)
+    }
 }

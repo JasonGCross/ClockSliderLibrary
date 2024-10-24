@@ -26,6 +26,9 @@ public enum ClockRotationCount: Int {
      */
     case second
     
+}
+
+extension ClockRotationCount {
     mutating func incrementCount() {
         if (self == .first) {
             self = .second

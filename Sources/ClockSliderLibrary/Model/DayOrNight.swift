@@ -11,7 +11,9 @@ import Foundation
 public enum DayOrNight: String {
     case am = "AM"
     case pm = "PM"
-    
+}
+
+extension DayOrNight {
     mutating func switchDaylightDescription() {
         if (self == .am) {
             self = .pm

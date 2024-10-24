@@ -92,13 +92,13 @@ public struct TimeSliceViewModel {
      The point in the centre of the slider track is converted to an angle,
      the angle between the vertical line (12 o'clock) and the intercept to the slider centre point.
      
-     5. Clock Face Time: e.g. 1:30am = 90 minutes
+     4. Raw Minutes on Clock Face: e.g. 90 minutes
      The angle is converted to raw minutes which the hour hand should lie on the clock face.
      This position of the hour hand is different between 12-hour clocks and 24-hour clocks.
      For 12-hour clocks, this time can only be a number between 0 minutes and 720 minutes (12 * 60).
      Both AM and PM will show the same clock face time.
      
-     6. Time of Day Time: e.g. 1:30pm, or 13:30 = 810 minutes
+     5. Time of Day Time: e.g. 1:30pm, or 13:30 = 810 minutes
      For a 24-hour clock, the time of day is always the same as the clock face time.
      But for a 12-hour clock, the time of day is only the same as the clock face time before noon.
      After noon, the actual time of day is 12 hours greater.
@@ -119,16 +119,6 @@ public struct TimeSliceViewModel {
     /// helps distinguish between the first and second rotation around the clock
     var clockRotationCount: ClockRotationCount = ClockRotationCount.first
     var maximumTimeDuration: Int?
-    var startClockFaceTime: ClockFaceTime = ClockFaceTime()
-    var finishClockFaceTime: ClockFaceTime = ClockFaceTime()
-    
-    var startTimeInMinutes: Int {
-        self.startClockFaceTime.minutes
-    }
-    
-    var finishTimeInMinutes: Int {
-        self.finishClockFaceTime.minutes
-    }
     
     var startDayOrNightString: String {
         return self.startTime.amORpm.rawValue
@@ -163,27 +153,23 @@ public struct TimeSliceViewModel {
         }
     }
     
-    func changeTimeOfDayUsingClockFaceTime(oldTimeOfDay: TimeOfDayModel, clockFaceTime: ClockFaceTime) -> TimeOfDayModel {
+    func changeTimeOfDayUsingClockFaceTime(oldTimeOfDay: TimeOfDayModel, clockFaceTime newMinutes: Int) -> TimeOfDayModel {
         guard self.clockType != ClockType.twentyFourHourClock else {
-            let newValue = TimeOfDayModel.timeModelFromMinutes(clockFaceTime.minutes)
+            let newValue = TimeOfDayModel.timeModelFromMinutes(newMinutes)
             return newValue
         }
         
         // now guaranteed to be working with a 12-hour clock
-        let newMinutes = clockFaceTime.minutes
         let safeMinutes = TimeSliceViewModel.convertMinutesToSafeMinutes(newMinutes, clockType: self.clockType)
-        
-        // this is only used to figure out the quadrants involved in the time change
-        var newClockFaceTime = self.startClockFaceTime
-        newClockFaceTime.minutes = safeMinutes
         
         // this is the value which will be returned
         var newTimeOfDay: TimeOfDayModel = oldTimeOfDay
+        newTimeOfDay.adjustMinutesSlightly(newTotalMinutes: safeMinutes)
         
         // decide whether or not this single hand represents daytime or night time
         // note that this decision depends explicitly on the 12 o'clock position
-        let oldQuadrant = self.startClockFaceTime.quadrant
-        let newQuadrant = newClockFaceTime.quadrant
+        let oldQuadrant = ClockQuadrant.mapTimeToQuandrant(oldTimeOfDay, clockType: self.clockType)
+        let newQuadrant = ClockQuadrant.mapTimeToQuandrant(newTimeOfDay, clockType: self.clockType)
         if (newQuadrant != oldQuadrant) {
             if ((newQuadrant == .fourth) && (oldQuadrant == .first)) {
                 newTimeOfDay = self.startTime.addingTimeInterval(12 * 60 * 60)
@@ -196,26 +182,15 @@ public struct TimeSliceViewModel {
         return newTimeOfDay
     }
     
-    mutating func changeStartTimeOfDayUsingClockFaceTime(_ clockFaceTime: ClockFaceTime) {
+    mutating func changeStartTimeOfDayUsingClockFaceTime(_ minutes: Int) {
         guard false == self.startTimeIsFixedToZero else { return }
-        let newValue = self.changeTimeOfDayUsingClockFaceTime(oldTimeOfDay: self.startTime, clockFaceTime: clockFaceTime)
+        let newValue = self.changeTimeOfDayUsingClockFaceTime(oldTimeOfDay: self.startTime, clockFaceTime: minutes)
         self.startTime = newValue
     }
     
-    mutating func changeFinishTimeOfDayUsingClockFaceTime(_ clockFaceTime: ClockFaceTime) {
-        let newValue = self.changeTimeOfDayUsingClockFaceTime(oldTimeOfDay: self.finishTime, clockFaceTime: clockFaceTime)
+    mutating func changeFinishTimeOfDayUsingClockFaceTime(_ minutes: Int) {
+        let newValue = self.changeTimeOfDayUsingClockFaceTime(oldTimeOfDay: self.finishTime, clockFaceTime: minutes)
         self.finishTime = newValue
-    }
-    
-    func translateTimeOfDayToClockFaceTime(_ timeOfDay: TimeOfDayModel) -> ClockFaceTime {
-        let totalMinutes = timeOfDay.hour * 60 + timeOfDay.minute
-        let safeMinutes = TimeSliceViewModel.convertMinutesToSafeMinutes(totalMinutes, clockType: self.clockType)
-        var newValue = ClockFaceTime(minutes: safeMinutes)
-        if timeOfDay.hour > 12 {
-            newValue.amORpm = .pm
-        }
-        newValue.clockType = self.clockType
-        return newValue
     }
     
     static func timeSpanBetween(_ startTime: Int, finishTime:Int) -> Int {
