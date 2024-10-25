@@ -35,7 +35,15 @@ import Foundation
         (startHour: 0, startMin: 0, changedStartTime: 60,  expectedHour: 1, expectedMin: 0),
         (startHour: 0, startMin: 0, changedStartTime: 145, expectedHour: 2, expectedMin: 25),
         // starting between 9am and noon, no overlap upon dragging
-        (startHour: 22, startMin: 15, changedStartTime: 695,   expectedHour: 23, expectedMin: 35),
+        (startHour: 22, startMin: 15, changedStartTime: 695,  expectedHour: 23, expectedMin: 35),
+        // other test data as in validateAdjustingMinutes
+        (startHour: 3,  startMin: 0,  changedStartTime: 183,  expectedHour: 3, expectedMin: 3),
+        (startHour: 15, startMin: 0,  changedStartTime: 183,  expectedHour: 15, expectedMin: 3),
+        (startHour: 23, startMin: 59, changedStartTime: 2,    expectedHour: 0, expectedMin: 2),
+        (startHour: 0,  startMin: 2,  changedStartTime: 1439, expectedHour: 23, expectedMin: 59),
+        (startHour: 5,  startMin: 15, changedStartTime: 320,  expectedHour: 5, expectedMin: 20),
+        (startHour: 17, startMin: 15, changedStartTime: 320,  expectedHour: 17, expectedMin: 20),
+//        (startHour: 22, startMin: 15, changedStartTime: 695,  expectedHour: 23, expectedMin: 35),
     ]) func validateSettingStartTime(
         tuple: (startHour: Int, startMin: Int, changedStartTime: Int, expectedHour: Int, expectedMin: Int)
     ) throws {
@@ -49,20 +57,24 @@ import Foundation
     }
     
     @Test(arguments: [
-        (finishHour: 0, finishMin: 0, changedFinishTime: 0,   expectedHour: 0, expectedMin: 0),
-        (finishHour: 6, finishMin: 0, changedFinishTime: 360,   expectedHour: 6, expectedMin: 0),
-        (finishHour: 3, finishMin: 0, changedFinishTime: 240,  expectedHour: 4, expectedMin: 0),
-        (finishHour: 3, finishMin: 0, changedFinishTime: 325, expectedHour: 5, expectedMin: 25),
-        
-        //TODO: add many more cases, account for crossing the 12-hour mark, and also having start/finish on either side of it
+        (finishHour: 0,  finishMin: 0,  changedFinishTime: 0,     expectedHour: 0,  expectedMin: 0),
+        (finishHour: 6,  finishMin: 0,  changedFinishTime: 360,   expectedHour: 6,  expectedMin: 0),
+        (finishHour: 3,  finishMin: 0,  changedFinishTime: 240,   expectedHour: 4,  expectedMin: 0),
+        (finishHour: 3,  finishMin: 0,  changedFinishTime: 325,   expectedHour: 5,  expectedMin: 25),
+        (finishHour: 15, finishMin: 0,  changedFinishTime: 183,   expectedHour: 15, expectedMin: 3),
+        (finishHour: 23, finishMin: 59, changedFinishTime: 2,     expectedHour: 0,  expectedMin: 2),
+        (finishHour: 0,  finishMin: 2,  changedFinishTime: 1439,  expectedHour: 23, expectedMin: 59),
+        (finishHour: 5,  finishMin: 15, changedFinishTime: 320,   expectedHour: 5,  expectedMin: 20),
+        (finishHour: 17, finishMin: 15, changedFinishTime: 320,   expectedHour: 17, expectedMin: 20),
+        (finishHour: 22, finishMin: 15, changedFinishTime: 695,   expectedHour: 23, expectedMin: 35),
     ]) func validateSettingFinishTime(
-        tuple: (finishHour: Int, finishMin: Int, changedStartTime: Int, expectedHour: Int, expectedMin: Int)
+        tuple: (finishHour: Int, finishMin: Int, changedFinishTime: Int, expectedHour: Int, expectedMin: Int)
     ) throws {
         let finishTime = TimeOfDayModel(hour: tuple.finishHour, minute: tuple.finishMin)
         var viewModel = TimeSliceViewModel(
             clockType: .twelveHourClock,
             finishTime: finishTime)
-        viewModel.changeFinishTimeOfDayUsingClockFaceTime(tuple.changedStartTime)
+        viewModel.changeFinishTimeOfDayUsingClockFaceTime(tuple.changedFinishTime)
         let expectedResult = TimeOfDayModel(hour: tuple.expectedHour, minute: tuple.expectedMin)
         #expect(viewModel.finishTime == expectedResult)
     }

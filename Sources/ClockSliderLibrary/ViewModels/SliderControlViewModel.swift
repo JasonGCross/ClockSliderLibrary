@@ -132,25 +132,11 @@ public struct SliderControlViewModel {
     
     internal func translateTouchLocationToSliderCenterPoint(_ touchLocation: CGPoint) -> CGPoint? {
         
-        // 1. determine by how much the user has dragged
+        // determine by how much the user has dragged
         guard let bestInterceptPoint = self.closestPointOnSliderCenterTrack(touchLocation) else {
             return nil
         }
-
-        var mappedIntercept = self.mapScreenPointToSliderCenterTrackPoint(bestInterceptPoint)
-        if (mappedIntercept.x > self.radiusClockCenterToSliderTrackCenter) {
-            mappedIntercept = CGPoint(x: self.radiusClockCenterToSliderTrackCenter, y: mappedIntercept.y)
-        }
-        else if (mappedIntercept.x < -self.radiusClockCenterToSliderTrackCenter) {
-            mappedIntercept = CGPoint(x: -self.radiusClockCenterToSliderTrackCenter, y: mappedIntercept.y)
-        }
-        
-        if (mappedIntercept.y > self.radiusClockCenterToSliderTrackCenter) {
-            mappedIntercept = CGPoint(x: mappedIntercept.x, y: self.radiusClockCenterToSliderTrackCenter)
-        }
-        else if (mappedIntercept.y < -self.radiusClockCenterToSliderTrackCenter) {
-            mappedIntercept = CGPoint(x: mappedIntercept.x, y: -self.radiusClockCenterToSliderTrackCenter)
-        }
+        let mappedIntercept = self.mapScreenPointToSliderCenterTrackPoint(bestInterceptPoint)
         return mappedIntercept
     }
     
@@ -191,7 +177,7 @@ public struct SliderControlViewModel {
         //3. Angle: e.g. 0.785 radians
         //The point in the centre of the slider track is converted to an angle,
         //the angle between the vertical line (12 o'clock) and the intercept to the slider centre point.
-        let angle = self.clockFaceAngle(sliderCenterPoint)
+        let angle = self.translateSliderCenterPointToAngle(sliderCenterPoint)
         
         //4. Raw Minutes on Clock Face: e.g. 90 minutes
         //The angle is converted to raw minutes which the hour hand should lie on the clock face.
@@ -232,6 +218,10 @@ extension SliderControlViewModel {
     
     func test_clockFaceAngle(_ point: CGPoint) -> CGFloat {
         return self.clockFaceAngle(point)
+    }
+    
+    func test_translateSliderCenterPointToAngle(_ point: CGPoint) -> CGFloat {
+        return self.translateSliderCenterPointToAngle(point)
     }
 
     func test_minutesForClockFaceAngle(_ angle: CGFloat) -> Int {

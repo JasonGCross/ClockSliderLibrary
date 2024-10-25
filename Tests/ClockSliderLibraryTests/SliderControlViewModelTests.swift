@@ -24,7 +24,8 @@ struct SliderControlViewModelTests {
         let screenPoint: CGPoint = CGPoint(x: tuple.p1x, y: tuple.p1y)
         let viewModel = SliderControlViewModel(
             clockRadius: 100,
-            radiusClockCenterToSliderTrackCenter: 100 + (44 / 2), sliderViewModel: timeSliceViewModel)
+            radiusClockCenterToSliderTrackCenter: 100 + (44 / 2),
+            sliderViewModel: timeSliceViewModel)
         let sliderCenterPoint: CGPoint = viewModel.test_mapScreenPointToSliderCenterTrackPoint(screenPoint)
         #expect(abs(sliderCenterPoint.x - tuple.p2x) <= 0.0001)
         #expect(abs(sliderCenterPoint.y - tuple.p2y) <= 0.0001)
@@ -37,6 +38,7 @@ struct SliderControlViewModelTests {
         (p1x: 361.97265625, p1y: 269.86328125, p2x: 71.62164473545795, p2y: -30.892393973077674),
         (p1x: 37.31640625, p1y: 126.84765625, p2x: -71.13891953955414, p2y: 31.988343607396217),
         (p1x: 43.27734375, p1y: 281.15625, p2x: -69.26423111088886, p2y: -35.86734292664258),
+        (p1x: 200.0, p1y: 0.0, p2x: 0.0, p2y: 78.0),
     ]) func validateTranslatingTouchLocationToSliderCenterPoint(
         tuple: (p1x: Double, p1y: Double, p2x: Double, p2y: Double)
     )  throws {
@@ -55,10 +57,25 @@ struct SliderControlViewModelTests {
         #expect(abs(safeResult.y - tuple.p2y) <= 0.0001)
     }
     
-    
+    @Test func validateClosestPointInvalidData() {
+        let radius: CGFloat = 200
+        let radiusClockCenterToSliderTrackCenter: CGFloat = 78
+        let touchLocation = CGPoint(x: 201.0, y: 201.0)
+        let timeSliceViewModel: TimeSliceViewModel = TimeSliceViewModel()
+        let viewModel = SliderControlViewModel(
+            clockRadius: radius,
+            radiusClockCenterToSliderTrackCenter: radiusClockCenterToSliderTrackCenter,
+            sliderViewModel: timeSliceViewModel)
+        let mappedInterceptPoint: CGPoint? = viewModel.test_translateTouchLocationToSliderCenterPoint(touchLocation)
+        #expect(nil == mappedInterceptPoint)
+    }
     
     @Test(arguments:[
-        (x: 0.0, y: 0.0, expectedAngle: 0.0)
+        (x: 0.0, y: 0.0, expectedAngle: 0.0),
+        (x: -77.08453325465366, y: 11.915315057193993, expectedAngle: 4.865749886979605),
+        (x: 22.915863468334976, y: 74.55778431190556, expectedAngle: 0.29819267495268725),
+        (x: 73.71509267605859, y: -25.49676669227091, expectedAngle: 1.903798370339918),
+        (x: -37.19396187081969, y: -68.56098891025431, expectedAngle: 3.6386552559029925),
     ]) func validateMappingSliderCentrePointToClockFaceAngle(
         tuple: (x: CGFloat, y: CGFloat, expectedAngle: CGFloat)
     ) {
@@ -83,6 +100,29 @@ struct SliderControlViewModelTests {
         #expect(abs(angle2 - tuple.expectedAngle) <= 0.0001)
     }
     
+    @Test(arguments:[
+        (x: 150.0,  y: 75.0  ),
+        (x: 150.0,  y: -75.0  ),
+        (x: 150.0,  y: 150.0 ),
+        (x: -150.0, y: 75.0  ),
+        (x: -150.0, y: -75.0 ),
+    ]) func validateClockFaceAngleInvalidData(
+        tuple: (x: CGFloat, y: CGFloat)
+    ) {
+        let radius: CGFloat = 200
+        let radiusClockCenterToSliderTrackCenter: CGFloat = 78
+        let timeSliceViewModel: TimeSliceViewModel = TimeSliceViewModel(clockType: .twelveHourClock)
+        let viewModel = SliderControlViewModel(
+            clockRadius: radius,
+            radiusClockCenterToSliderTrackCenter: radiusClockCenterToSliderTrackCenter,
+            sliderViewModel: timeSliceViewModel)
+        let mappedInterceptPoint: CGPoint = CGPoint(x: tuple.x, y: tuple.y)
+        let angle = viewModel.test_clockFaceAngle(mappedInterceptPoint)
+        #expect(angle.isNaN)
+        
+        let result2 = viewModel.test_translateSliderCenterPointToAngle(mappedInterceptPoint)
+        #expect(result2 == 0)
+    }
     
     @Test(arguments:[
         (angle: 0.524923243696617, expectedMinutes: 120.3035457285336),
@@ -115,5 +155,68 @@ struct SliderControlViewModelTests {
         let minutes2 = vm2.test_minutesForClockFaceAngle(tuple.angle)
         let expectedMInutes2: CGFloat = tuple.expectedMinutes / 2.0
         #expect(abs(CGFloat(minutes2) - expectedMInutes2) <= 1)
+    }
+    
+    @Test(arguments:[
+        (hour: 0, min: 0, px: 150.0, py: 75.0, resultHour: 2, resultMin: 6),
+        (hour: 5, min: 59, px: 145.0, py: 200.0, resultHour: 5, resultMin: 11)
+    ]) func validateFullRoundOfTouchToTimeStart(
+        tuple: (hour: Int, min: Int, px: CGFloat, py: CGFloat, resultHour: Int, resultMin: Int)
+    ) {
+        let startTime = TimeOfDayModel(hour: tuple.hour, minute: tuple.min)
+        let timeSliceViewModel: TimeSliceViewModel = TimeSliceViewModel(
+            clockType: ClockType.twelveHourClock,
+            startTime: startTime
+        )
+        let screenPoint: CGPoint = CGPoint(x: tuple.px, y: tuple.py)
+        var viewModel = SliderControlViewModel(
+            clockRadius: 100,
+            radiusClockCenterToSliderTrackCenter: 100 + (44 / 2),
+            sliderViewModel: timeSliceViewModel)
+        viewModel.adjustStartAndEndTimesDuringTracking(location: screenPoint, highlightedKnob: .start)
+        let resultTime = viewModel.sliderViewModel.startTime
+        let expectedTime = TimeOfDayModel(hour: tuple.resultHour, minute: tuple.resultMin)
+        #expect(resultTime == expectedTime)
+    }
+    
+    @Test(arguments:[
+        (hour: 0, min: 0, px: 150.0, py: 75.0, resultHour: 2, resultMin: 6),
+        (hour: 5, min: 59, px: 145.0, py: 200.0, resultHour: 5, resultMin: 11)
+    ]) func validateFullRoundOfTouchToTimeFinish(
+        tuple: (hour: Int, min: Int, px: CGFloat, py: CGFloat, resultHour: Int, resultMin: Int)
+    ) {
+        let finishTime = TimeOfDayModel(hour: tuple.hour, minute: tuple.min)
+        let timeSliceViewModel: TimeSliceViewModel = TimeSliceViewModel(
+            clockType: ClockType.twelveHourClock,
+            finishTime: finishTime
+        )
+        let screenPoint: CGPoint = CGPoint(x: tuple.px, y: tuple.py)
+        var viewModel = SliderControlViewModel(
+            clockRadius: 100,
+            radiusClockCenterToSliderTrackCenter: 100 + (44 / 2),
+            sliderViewModel: timeSliceViewModel)
+        viewModel.adjustStartAndEndTimesDuringTracking(location: screenPoint, highlightedKnob: .finish)
+        let resultTime = viewModel.sliderViewModel.finishTime
+        let expectedTime = TimeOfDayModel(hour: tuple.resultHour, minute: tuple.resultMin)
+        #expect(resultTime == expectedTime)
+    }
+    
+    @Test func validateNoChangeWhenSliderToInvalidPosition() {
+        let startTime = TimeOfDayModel(hour: 0, minute: 0)
+        let timeSliceViewModel: TimeSliceViewModel = TimeSliceViewModel(
+            clockType: ClockType.twelveHourClock,
+            finishTime: startTime
+        )
+        let radius: CGFloat = 200
+        let radiusClockCenterToSliderTrackCenter: CGFloat = 78
+        let touchLocation = CGPoint(x: 201.0, y: 201.0)
+        var viewModel = SliderControlViewModel(
+            clockRadius: radius,
+            radiusClockCenterToSliderTrackCenter: radiusClockCenterToSliderTrackCenter,
+            sliderViewModel: timeSliceViewModel)
+
+        viewModel.adjustStartAndEndTimesDuringTracking(location: touchLocation, highlightedKnob: .start)
+        let resultTime = viewModel.sliderViewModel.startTime
+        #expect(resultTime == startTime)
     }
 }

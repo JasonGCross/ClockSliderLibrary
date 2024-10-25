@@ -60,6 +60,10 @@ struct ClockQuadrantTests {
         (hours: 13 ,min: 21, expectedResult: ClockQuadrant.third.rawValue,  clockType: ClockType.twentyFourHourClock.rawValue),
         (hours: 22 ,min: 0,  expectedResult: ClockQuadrant.fourth.rawValue, clockType: ClockType.twentyFourHourClock.rawValue),
         (hours: 23 ,min: 59, expectedResult: ClockQuadrant.fourth.rawValue, clockType: ClockType.twentyFourHourClock.rawValue),
+        // greater than one rotation
+        (hours: 24  ,min: 13, expectedResult: ClockQuadrant.first.rawValue,  clockType: ClockType.twelveHourClock.rawValue),
+        // negative minutes
+        (hours: 0  ,min: -5, expectedResult: ClockQuadrant.fourth.rawValue,  clockType: ClockType.twelveHourClock.rawValue),
     ]) func validateMappingMinutesToQuadrant(
         tuple: (hour: Int, min: Int, expectedResult: String, clockType: Int)
     ) {

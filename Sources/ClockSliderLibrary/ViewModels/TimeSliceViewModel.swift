@@ -164,21 +164,11 @@ public struct TimeSliceViewModel {
         
         // this is the value which will be returned
         var newTimeOfDay: TimeOfDayModel = oldTimeOfDay
-        newTimeOfDay.adjustMinutesSlightly(newTotalMinutes: safeMinutes)
         
         // decide whether or not this single hand represents daytime or night time
         // note that this decision depends explicitly on the 12 o'clock position
-        let oldQuadrant = ClockQuadrant.mapTimeToQuandrant(oldTimeOfDay, clockType: self.clockType)
-        let newQuadrant = ClockQuadrant.mapTimeToQuandrant(newTimeOfDay, clockType: self.clockType)
-        if (newQuadrant != oldQuadrant) {
-            if ((newQuadrant == .fourth) && (oldQuadrant == .first)) {
-                newTimeOfDay = self.startTime.addingTimeInterval(12 * 60 * 60)
-            }
-            else if ((newQuadrant == .first) && (oldQuadrant == .fourth)) {
-                newTimeOfDay = self.startTime.addingTimeInterval(-12 * 60 * 60)
-            }
-        }
-        
+        // rather than compare quadrants, make sure the new time is close to the old time
+        newTimeOfDay.adjustMinutesSlightly(newTotalMinutes: safeMinutes)        
         return newTimeOfDay
     }
     

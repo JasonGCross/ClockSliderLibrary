@@ -64,13 +64,7 @@ extension ClockQuadrant {
         if (totalMinutes >= oneRotation) {
             safeMinutes = oneRotation * (totalMinutes / oneRotation)
         }
-        else if (totalMinutes < 0) {
-            var negativeSaveMinutes = -totalMinutes
-            if (negativeSaveMinutes >= oneRotation) {
-                negativeSaveMinutes = oneRotation * (totalMinutes / oneRotation)
-            }
-            safeMinutes = oneRotation - negativeSaveMinutes
-        }
+        // due to the constructor of TimeOfDayModel, negative minutes are never possible
         
         if (safeMinutes >= 0) && (safeMinutes < quarterRotation) {
             return ClockQuadrant.first

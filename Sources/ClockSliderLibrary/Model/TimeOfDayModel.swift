@@ -47,15 +47,15 @@ extension TimeOfDayModel {
         let calendar = Calendar(identifier: .gregorian)
         let components = calendar.dateComponents([.hour, .minute], from: Date())
         return TimeOfDayModel(
-            hour: components.hour ?? 0,
-            minute: components.minute ?? 0)
+            hour: components.hour!,
+            minute: components.minute!)
     }
     
     public func getFoundationDateWithOnlyHoursAndMinutes() -> Date {
         let calendar = Calendar(identifier: .gregorian)
         let components = DateComponents(hour: self.hour, minute: self.minute)
         let date = calendar.date(from: components)
-        return date ?? Date()
+        return date!
     }
     
     public mutating func setMinutes(_ minutes: Int) {
@@ -155,7 +155,7 @@ extension TimeOfDayModel {
     public static func timeOnlyFromFoundationDate(_ date: Date) -> TimeOfDayModel {
         let calendar = Calendar(identifier: .gregorian)
         let components = calendar.dateComponents([.hour, .minute], from: date)
-        return TimeOfDayModel(hour: components.hour ?? 0, minute: components.minute ?? 0)
+        return TimeOfDayModel(hour: components.hour!, minute: components.minute!)
     }
     
     public static func timeModelFromMinutes(_ minutes: Int) -> TimeOfDayModel {
