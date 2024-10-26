@@ -78,4 +78,97 @@ import Foundation
         let expectedResult = TimeOfDayModel(hour: tuple.expectedHour, minute: tuple.expectedMin)
         #expect(viewModel.finishTime == expectedResult)
     }
+    
+    @Test func validateVariousGettersSetters() {
+        let model = TimeSliceViewModel(
+            startTimeIsFixedToZero: false,
+            clockType: ClockType.twelveHourClock,
+            startTime: TimeOfDayModel(),
+            finishTime: TimeOfDayModel(),
+            clockRotationCount: ClockRotationCount.first,
+            maximumTimeDuration: nil)
+        
+        #expect(model.startTimeIsFixedToZero == false)
+        #expect(model.clockType == .twelveHourClock)
+        #expect(model.startTime == TimeOfDayModel())
+        #expect(model.finishTime == TimeOfDayModel())
+        #expect(model.clockRotationCount == .first)
+        #expect(model.maximumTimeDuration == nil)
+        #expect(model.startDayOrNightString == DayOrNight.am.rawValue)
+        #expect(model.finishDayOrNightString == DayOrNight.am.rawValue)
+        #expect(model.oneRotation == 720)
+        #expect(model.quarterRotation == 180)
+        #expect(model.halfRotation == 360)
+        #expect(model.threeQuarterRotation == 540)
+        #expect(model.almostFullRotation == 640)
+        #expect(model.timeRange == 0)
+    }
+    
+    @Test(arguments:[
+        // first rotation
+        (startHour: 0,   startMin: 0, finishHour: 3,  finishMin: 0,  rotation: ClockRotationCount.first.rawValue, expectedTime: 180),
+        (startHour: 17, startMin: 15, finishHour: 23, finishMin: 59, rotation: ClockRotationCount.first.rawValue, expectedTime: 404),
+        (startHour: 22, startMin: 33, finishHour: 1,  finishMin: 33, rotation: ClockRotationCount.first.rawValue, expectedTime: 180),
+        // selected time > one rotation (switch in code is never hit because time is always "normalized" to max one rotation
+        (startHour: 0,   startMin: 0, finishHour: 27,  finishMin: 0,  rotation: ClockRotationCount.first.rawValue, expectedTime: 180),
+        // second rotation
+        (startHour: 0,   startMin: 0, finishHour: 3,  finishMin: 0,  rotation: ClockRotationCount.second.rawValue, expectedTime: 900),
+        (startHour: 17, startMin: 15, finishHour: 23, finishMin: 59, rotation: ClockRotationCount.second.rawValue, expectedTime: 1124),
+        (startHour: 22, startMin: 33, finishHour: 1,  finishMin: 33, rotation: ClockRotationCount.second.rawValue, expectedTime: 900),
+        // selected time < one rotation
+        (startHour: 23, startMin: 0,  finishHour: 23, finishMin: 25, rotation: ClockRotationCount.second.rawValue, expectedTime: 745),
+    ]) func validateTimeRange(
+        tuple: (startHour: Int, startMin: Int, finishHour: Int, finishMin: Int, rotation: Int, expectedTime: Int)
+    ) {
+        let model = TimeSliceViewModel(
+            startTimeIsFixedToZero: false,
+            clockType: ClockType.twelveHourClock,
+            startTime: TimeOfDayModel(hour: tuple.startHour, minute: tuple.startMin),
+            finishTime: TimeOfDayModel(hour: tuple.finishHour, minute: tuple.finishMin),
+            clockRotationCount: ClockRotationCount(rawValue: tuple.rotation)!
+        )
+        let result = model.timeRange
+        #expect(result == tuple.expectedTime)
+    }
+    
+    @Test(arguments: [
+        // starting at top of the clock, no overlap upon dragging
+        (startHour: 0, startMin: 0, changedStartTime: 0,   expectedHour: 0, expectedMin: 0),
+        (startHour: 0, startMin: 0, changedStartTime: 60,  expectedHour: 1, expectedMin: 0),
+        (startHour: 0, startMin: 0, changedStartTime: 145, expectedHour: 2, expectedMin: 25),
+        // starting between 9am and noon, no overlap upon dragging
+        (startHour: 22, startMin: 15, changedStartTime: 695,  expectedHour: 23, expectedMin: 35),
+        // other test data as in validateAdjustingMinutes
+        (startHour: 3,  startMin: 0,  changedStartTime: 183,  expectedHour: 3, expectedMin: 3),
+        (startHour: 15, startMin: 0,  changedStartTime: 183,  expectedHour: 15, expectedMin: 3),
+        (startHour: 23, startMin: 59, changedStartTime: 2,    expectedHour: 0, expectedMin: 2),
+        (startHour: 0,  startMin: 2,  changedStartTime: 1439, expectedHour: 23, expectedMin: 59),
+        (startHour: 5,  startMin: 15, changedStartTime: 320,  expectedHour: 5, expectedMin: 20),
+        (startHour: 17, startMin: 15, changedStartTime: 320,  expectedHour: 17, expectedMin: 20),
+    ]) func validateChangeTimeOfDayUsingClockFaceTime(
+        tuple: (startHour: Int, startMin: Int, changedStartTime: Int, expectedHour: Int, expectedMin: Int)
+    ) {
+        let startTime = TimeOfDayModel(hour: tuple.startHour, minute: tuple.startMin)
+        let viewModel = TimeSliceViewModel(
+            startTimeIsFixedToZero: false,
+            clockType: ClockType.twelveHourClock,
+            startTime: startTime,
+            finishTime: TimeOfDayModel(),
+            clockRotationCount: ClockRotationCount.first,
+            maximumTimeDuration: nil)
+        let actualResult = viewModel.changeTimeOfDayUsingClockFaceTime(oldTimeOfDay: startTime, clockFaceTime: tuple.changedStartTime)
+        let expectedResult = TimeOfDayModel(hour: tuple.expectedHour, minute: tuple.expectedMin)
+        #expect(actualResult == expectedResult)
+        
+        let vm2 = TimeSliceViewModel(
+            startTimeIsFixedToZero: false,
+            clockType: ClockType.twentyFourHourClock,
+            startTime: startTime,
+            finishTime: TimeOfDayModel(),
+            clockRotationCount: ClockRotationCount.second,
+            maximumTimeDuration: nil)
+        let result2 = vm2.changeTimeOfDayUsingClockFaceTime(oldTimeOfDay: startTime, clockFaceTime: tuple.changedStartTime)
+        let expectedResult2 = TimeOfDayModel.timeModelFromMinutes(tuple.changedStartTime)
+        #expect(result2 == expectedResult2)
+    }
 }

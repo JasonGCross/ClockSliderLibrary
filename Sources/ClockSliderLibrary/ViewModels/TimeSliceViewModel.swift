@@ -132,13 +132,13 @@ public struct TimeSliceViewModel {
     var halfRotation: Int { self.clockType.rawValue * 30 }
     var quarterRotation: Int { self.clockType.rawValue * 15 }
     var threeQuarterRotation: Int { self.clockType.rawValue * 45 }
-    var almostFullRotation: Int { self.clockType.rawValue * 60 * (640/720) }
+    var almostFullRotation: Int { self.clockType.rawValue * 60 * 640 / 720 }
     
     var timeRange: Int {
         get {
             var selectedTime: Int = TimeSliceViewModel.timeSpanBetween(
-                self.startTime.minute,
-                finishTime: self.finishTime.minute)
+                self.startTime,
+                finishTime: self.finishTime)
             switch (clockRotationCount) {
             case .first:
                 if (selectedTime > oneRotation) {
@@ -183,7 +183,7 @@ public struct TimeSliceViewModel {
         self.finishTime = newValue
     }
     
-    static func timeSpanBetween(_ startTime: Int, finishTime:Int) -> Int {
+    static func timeSpanBetween(_ startTime: TimeOfDayModel, finishTime:TimeOfDayModel) -> Int {
         // we cannot just perform simple subtraction because we are dealing with a clock
         // meaning from 11:00pm to 3:00am crosses the day boundary,
         // which must be taken into account
@@ -192,8 +192,10 @@ public struct TimeSliceViewModel {
         
         var startTimeComponents = DateComponents()
         var finishTimeComponents = DateComponents()
-        startTimeComponents.minute = startTime
-        finishTimeComponents.minute = finishTime
+        startTimeComponents.hour = startTime.hour
+        startTimeComponents.minute = startTime.minute
+        finishTimeComponents.hour = finishTime.hour
+        finishTimeComponents.minute = finishTime.minute
         
         guard let startTimeDateObject = calendar.date(from: startTimeComponents),
             var finishTimeDateObject = calendar.date(from: finishTimeComponents) else {
@@ -203,7 +205,10 @@ public struct TimeSliceViewModel {
         // have we taken into account the "crossing-midnight-boundary" issue yet?
         if (finishTimeDateObject < startTimeDateObject) {
             // add another 12 hours to the finish
-            finishTimeComponents.hour = 12
+            guard nil != finishTimeComponents.hour else {
+                return 0
+            }
+            finishTimeComponents.hour! += 24
             guard let adjustedFinishObject = calendar.date(from: finishTimeComponents) else {
                 return 0
             }
