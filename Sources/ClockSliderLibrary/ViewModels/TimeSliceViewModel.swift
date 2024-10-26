@@ -249,8 +249,6 @@ public struct TimeSliceViewModel {
         self.finishTime.setHours(newHours)
     }
     
-    
-    
     static func convertMinutesToSafeMinutes(_ unsafeMinutes: Int, clockType: ClockType) -> Int {
         let oneRotation = 60 * clockType.rawValue
         var safeMinutes = Double(unsafeMinutes).truncatingRemainder(dividingBy: CGFloat(oneRotation))

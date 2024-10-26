@@ -171,4 +171,25 @@ import Foundation
         let expectedResult2 = TimeOfDayModel.timeModelFromMinutes(tuple.changedStartTime)
         #expect(result2 == expectedResult2)
     }
+    
+    @Test(arguments: [
+        (startHour: 0, startMin: 0, changedStartTime: 0   ),
+        (startHour: 0, startMin: 0, changedStartTime: 60  ),
+        (startHour: 0, startMin: 0, changedStartTime: 145 ),
+    ]) func validateChangeStartTimeOfDayUsingClockFaceTime(
+        tuple: (startHour: Int, startMin: Int, changedStartTime: Int)
+    ) {
+        let startTime = TimeOfDayModel(hour: tuple.startHour, minute: tuple.startMin)
+        var viewModel = TimeSliceViewModel(
+            startTimeIsFixedToZero: true,
+            clockType: ClockType.twelveHourClock,
+            startTime: startTime,
+            finishTime: TimeOfDayModel(),
+            clockRotationCount: ClockRotationCount.first,
+            maximumTimeDuration: nil)
+        viewModel.changeStartTimeOfDayUsingClockFaceTime(tuple.changedStartTime)
+        let actualResult = viewModel.startTime
+        let expectedResult = startTime
+        #expect(actualResult == expectedResult)
+    }
 }
