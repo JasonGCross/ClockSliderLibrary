@@ -242,10 +242,10 @@ public struct TimeSliceViewModel {
         // for a 24-hour clock, this method has no effect
         guard self.clockType == ClockType.twelveHourClock else { return }
         // don't bother doing anything if there is no change
-        guard dayOrNight != self.startTime.amORpm else { return }
+        guard dayOrNight != self.finishTime.amORpm else { return }
         
         // OK. change from am to pm or vice versa
-        let newHours = self.startTime.hour + 12
+        let newHours = self.finishTime.hour + 12
         self.finishTime.setHours(newHours)
     }
     
@@ -274,15 +274,6 @@ public struct TimeSliceViewModel {
                  (oldTimeRange <= 60)) {
             self.clockRotationCount.decrementCount()
         }
-    }
-    
-    
-    var test_startTimeOfDayModel: TimeOfDayModel {
-        return self.startTime
-    }
-    
-    var test_finishTimeOfDayModel: TimeOfDayModel {
-        return self.finishTime
     }
 }
 
