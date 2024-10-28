@@ -28,12 +28,13 @@ public class CrossPlatformClockFaceView {
                                        green: 1.0,
                                        blue: 1.0,
                                        alpha: 1.0)
+    var fontColor = CGColor.init(red: 1.000, green: 0.000, blue: 0.000, alpha: 1.00)
     var yellowColor = CGColor.init(red: 0.999, green: 0.986, blue: 0.000, alpha: 1.00)
     let handsColor = CGColor.init(red: 0.999, green: 0.986, blue: 0.000, alpha: 1.00)
     var defaultFontSize : CGFloat = 14
     var fontFamilyNameString: String = "HelveticaNeue-Light"
-    var defaultFont: CGFont {
-        CGFont(self.fontFamilyNameString as CFString)!
+    var defaultFont: CTFont {
+        CTFontCreateWithName(self.fontFamilyNameString as CFString, defaultFontSize, nil)
     }
     var clockRadius: CGFloat
     var ringWidth: CGFloat
@@ -58,6 +59,47 @@ public class CrossPlatformClockFaceView {
         let diameter = CGFloat(fminf(Float(_frame.size.width),
                                      Float(_frame.size.height)))
         clockRadius = diameter / 2.0
+    }
+    
+    private func drawWithBasePoint(text: String,
+                                   textSize: CGSize,
+                                   basePoint:CGPoint,
+                                   angle:CGFloat,
+                                   context:CGContext
+    ) {
+        let t:CGAffineTransform   =   CGAffineTransform(translationX: basePoint.x, y: basePoint.y)
+        let r:CGAffineTransform   =   CGAffineTransform(rotationAngle:angle)
+        let fudgeFactor:CGAffineTransform   =   CGAffineTransform(translationX: -0.5 * textSize.width, y: -clockRadius + self.ringWidth + 3 * textSize.height)
+        let s:CGAffineTransform   =   CGAffineTransform(scaleX: 1, y: -1)
+        
+        context.concatenate(t)
+        context.concatenate(r)
+        context.concatenate(fudgeFactor)
+        context.concatenate(s)
+        
+        let glyphs: [CGGlyph] = ClockFaceViewModel.getGlyphsFromString(text,
+                                                                       usingFont: defaultFont,
+                                                                        context: context)
+        var points: [CGPoint] = [CGPoint](repeating: CGPoint.zero, count: glyphs.count)
+        for i in 0..<glyphs.count {
+            // very rough math for figuring out the width of each "label"
+            // i.e. a single digit is simply the text size passed in.
+            // the double digits are narrow for the "1" and then wider for the second digit
+            let x = basePoint.x + CGFloat(i) * 1.5 * (textSize.width / CGFloat(glyphs.count))
+            let y = basePoint.y
+            points[i] = CGPoint(x: x, y: y)
+        }
+        
+        let font = CGFont(self.fontFamilyNameString as CFString)!
+        context.setFont(font)
+        context.setFontSize(defaultFontSize)
+        context.setFillColor(fontColor)
+        context.showGlyphs(glyphs, at: points)
+    
+        context.concatenate(s.inverted())
+        context.concatenate(fudgeFactor.inverted())
+        context.concatenate(r.inverted())
+        context.concatenate(t.inverted())
     }
     
     public func draw(_ dirtyRect: CGRect, context: CGContext) {
@@ -147,7 +189,6 @@ public class CrossPlatformClockFaceView {
         context.saveGState()
         context.setLineWidth(self.hourMarkLineWidth)
         
-        var cumulativeLineWidth : CGFloat = 0.0
         for hour in 1...numberOfHours {
             context.rotate(by: rotationEachHour)
             hourMarkPath = CGMutablePath()
@@ -171,27 +212,12 @@ public class CrossPlatformClockFaceView {
             let angleCorrection = CGFloat(-1.0 * CGFloat(hour) * rotationEachHour)
             let textBaseCenterPoint = CGPoint(x: hourMarkProximalPoint.x,
                                               y: hourMarkProximalPoint.y + (1 * textSize.height) + self.clockFacePadding)
-            
-            let t:CGAffineTransform   =   CGAffineTransform(translationX: textBaseCenterPoint.x, y: textBaseCenterPoint.y)
-            let r:CGAffineTransform   =   CGAffineTransform(rotationAngle:angleCorrection)
-            let fudgeFactor:CGAffineTransform   =   CGAffineTransform(translationX: 1.35 * -cumulativeLineWidth, y: (0.5 * textSize.height))
-            let s:CGAffineTransform   =   CGAffineTransform(scaleX: 1, y: -1)
-            
-            context.concatenate(t)
-            context.concatenate(r)
-            context.concatenate(fudgeFactor)
-            context.concatenate(s)
-            
-            // This is a convenience function because the line could be drawn run-by-run by getting the glyph runs, getting the glyphs out of them, and calling a function such as showGlyphs(_:atPositions:count:). This call can leave the graphics context in any state and does not flush the context after the draw operation.
-            // attempting to flush or restore the graphics context did not fix the issue of the next line drawn
-            // starting where the old one left off. To fix this, added a fudge factor
-            CTLineDraw(line, context)
-            cumulativeLineWidth += textPosition.width
-        
-            context.concatenate(s.inverted())
-            context.concatenate(fudgeFactor.inverted())
-            context.concatenate(r.inverted())
-            context.concatenate(t.inverted())
+            self.drawWithBasePoint(
+                text: textString,
+                textSize: textSize,
+                basePoint: textBaseCenterPoint,
+                angle: angleCorrection,
+                context: context)
         }
         context.restoreGState()
 
