@@ -12,7 +12,11 @@ enum ClockFaceViewModelError: Error {
     case cannotGetGlyphs
 }
 
-struct ClockFaceViewModel {
+public struct ClockFaceViewModel {
+    var clockType: ClockType = .twelveHourClock
+    var numberOfHours: Int { self.clockType.rawValue }
+    var rotationEachHour: CGFloat { CGFloat(CGFloat(2 * Double.pi) / CGFloat(clockType.rawValue)) }
+    var clockTime = TimeOfDayModel.now
     
     internal static func getGlyphsFromString(_ textString: String,
                                              usingFont coreTextFont: CTFont,

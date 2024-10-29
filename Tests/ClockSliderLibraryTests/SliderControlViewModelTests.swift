@@ -174,7 +174,7 @@ struct SliderControlViewModelTests {
             radiusClockCenterToSliderTrackCenter: 100 + (44 / 2),
             sliderViewModel: timeSliceViewModel)
         viewModel.adjustStartAndEndTimesDuringTracking(location: screenPoint, highlightedKnob: .start)
-        let resultTime = viewModel.sliderViewModel.startTime
+        let resultTime = viewModel.timeSliceViewModel.startTime
         let expectedTime = TimeOfDayModel(hour: tuple.resultHour, minute: tuple.resultMin)
         #expect(resultTime == expectedTime)
     }
@@ -196,7 +196,7 @@ struct SliderControlViewModelTests {
             radiusClockCenterToSliderTrackCenter: 100 + (44 / 2),
             sliderViewModel: timeSliceViewModel)
         viewModel.adjustStartAndEndTimesDuringTracking(location: screenPoint, highlightedKnob: .finish)
-        let resultTime = viewModel.sliderViewModel.finishTime
+        let resultTime = viewModel.timeSliceViewModel.finishTime
         let expectedTime = TimeOfDayModel(hour: tuple.resultHour, minute: tuple.resultMin)
         #expect(resultTime == expectedTime)
     }
@@ -216,7 +216,7 @@ struct SliderControlViewModelTests {
             sliderViewModel: timeSliceViewModel)
 
         viewModel.adjustStartAndEndTimesDuringTracking(location: touchLocation, highlightedKnob: .start)
-        let resultTime = viewModel.sliderViewModel.startTime
+        let resultTime = viewModel.timeSliceViewModel.startTime
         #expect(resultTime == startTime)
     }
 }

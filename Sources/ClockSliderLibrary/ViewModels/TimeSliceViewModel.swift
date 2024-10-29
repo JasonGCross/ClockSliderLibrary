@@ -153,6 +153,12 @@ public struct TimeSliceViewModel {
         }
     }
     
+    var numberOfMinutesPerClockRotation: Int {
+        return 60 * self.clockType.rawValue
+    }
+    
+    var maxAllowedMinutes: Int { self.clockType.rawValue * 60 }
+    
     func changeTimeOfDayUsingClockFaceTime(oldTimeOfDay: TimeOfDayModel, clockFaceTime newMinutes: Int) -> TimeOfDayModel {
         guard self.clockType != ClockType.twentyFourHourClock else {
             let newValue = TimeOfDayModel.timeModelFromMinutes(newMinutes)

@@ -129,7 +129,7 @@ public struct ClockSliderViewModel {
                                                  alpha: &secondDayEndAlpha)
     }
     
-    func thumbnailCenterPoint(_ minutes: CGFloat) -> CGPoint {
+    func thumbnailCenterPoint(_ minutes: Int) -> CGPoint {
         var value = CGPoint.zero
         
         //                      opposite
@@ -185,9 +185,9 @@ public struct ClockSliderViewModel {
      
      - returns: clockFaceAngle the angle between the vertical (running to 12) and the current hour hand
      */
-    func clockFaceAngle(screenMinutes minutes: CGFloat) -> CGFloat {
+    func clockFaceAngle(screenMinutes minutes: Int) -> CGFloat {
         let ticksPerRevolution: Int = self.numberOfHours * 60
-        let numberOfTicks = minutes.truncatingRemainder(dividingBy: CGFloat(ticksPerRevolution))
+        let numberOfTicks = CGFloat(minutes).truncatingRemainder(dividingBy: CGFloat(ticksPerRevolution))
         let value = (CGFloat(numberOfTicks) / CGFloat(ticksPerRevolution)) * CGFloat(2 * Double.pi)
         return value
     }
@@ -202,9 +202,10 @@ public struct ClockSliderViewModel {
      
      - returns: the rounded minutes
      */
-    fileprivate static func roundMinutesToMatchIncrementDuration(_ minutes: CGFloat, incrementDuration: Int) -> Int {
-        let remainder: CGFloat = minutes.truncatingRemainder(dividingBy: CGFloat(incrementDuration))
-        let floor: Int = Int(round(minutes - remainder))
+    internal static func roundMinutesToMatchIncrementDuration(_ minutes: Int, incrementDuration: Int) -> Int {
+        let minutesAsFloat: CGFloat = CGFloat(minutes)
+        let remainder: CGFloat = minutesAsFloat.truncatingRemainder(dividingBy: CGFloat(incrementDuration))
+        let floor: Int = Int(round(minutesAsFloat - remainder))
         let roundedRemainder: Int = Int(round(remainder / CGFloat(incrementDuration)) * CGFloat(incrementDuration))
         let roundedMinutes: Int = roundedRemainder + floor
         return roundedMinutes
@@ -212,7 +213,7 @@ public struct ClockSliderViewModel {
     
     public func originForThumbnail(_ minutes: Int) -> CGPoint {
         var value = CGPoint.zero
-        let centerPoint = self.thumbnailCenterPoint(CGFloat(minutes))
+        let centerPoint = self.thumbnailCenterPoint(minutes)
         let originPoint = CGPoint(x:centerPoint.x - halfSliderTrackWidth,
                                   y:centerPoint.y - halfSliderTrackWidth)
         value = originPoint

@@ -11,6 +11,15 @@ import CoreText
 
 public class CrossPlatformClockFaceView {
     
+    //
+    // properties
+    //
+    
+    // Attempt to keep only things that directly deal with view layout
+    // in this file (e.g. colors, widths, sizes).
+    // Move any underlying data or calculations to the View Model.
+    var viewModel: ClockFaceViewModel
+    
     var outerRingBackgroundColor : CGColor = CGColor.init(red: 0.8,
                                                      green: 0.8,
                                                      blue: 0.8,
@@ -19,7 +28,6 @@ public class CrossPlatformClockFaceView {
                                                          green: 0.4,
                                                          blue: 0.4,
                                                          alpha: 1.00)
-
     var tickMarkColor = CGColor.init(red: 0,
                                      green: 0,
                                      blue: 0,
@@ -44,21 +52,23 @@ public class CrossPlatformClockFaceView {
     let hourMarkLineWidth : CGFloat = 2
     let minuteMarkLineWidth: CGFloat = 1
     var rotationEachMinorTick : CGFloat = CGFloat(Double.pi / 24)
-    var clockType: ClockType = .twelveHourClock
-    var numberOfHours: Int { self.clockType.rawValue }
-    var rotationEachHour: CGFloat { CGFloat(CGFloat(2 * Double.pi) / CGFloat(clockType.rawValue)) }
-
     let handsWidth = 2.0
-    var clockTime = TimeOfDayModel.now
     let minuteHandRatio = 0.83
     let hourHandRatio = 0.65
     
     public init(_frame: CGRect,
-         _ringWidth: CGFloat) {
+         _ringWidth: CGFloat,
+         _viewModel: ClockFaceViewModel? = nil) {
         ringWidth = _ringWidth
         let diameter = CGFloat(fminf(Float(_frame.size.width),
                                      Float(_frame.size.height)))
         clockRadius = diameter / 2.0
+        if let safeViewModel = _viewModel {
+            self.viewModel = safeViewModel
+        }
+        else  {
+            self.viewModel = ClockFaceViewModel()
+        }
     }
     
     private func drawWithBasePoint(text: String,
@@ -173,7 +183,7 @@ public class CrossPlatformClockFaceView {
             context.saveGState()
             context.setLineWidth(self.minuteMarkLineWidth)
             
-            let numberOfMinorTicksRequired = (60 * self.numberOfHours) / self.minutesBetweenMinorTickMarks
+            let numberOfMinorTicksRequired = (60 * self.viewModel.numberOfHours) / self.minutesBetweenMinorTickMarks
             
             for _ in 1...numberOfMinorTicksRequired {
                 context.rotate(by: self.rotationEachMinorTick)
@@ -189,8 +199,8 @@ public class CrossPlatformClockFaceView {
         context.saveGState()
         context.setLineWidth(self.hourMarkLineWidth)
         
-        for hour in 1...numberOfHours {
-            context.rotate(by: rotationEachHour)
+        for hour in 1...viewModel.numberOfHours {
+            context.rotate(by: self.viewModel.rotationEachHour)
             hourMarkPath = CGMutablePath()
             hourMarkPath.move(to: hourMarkDistalPoint)
             hourMarkPath.addLine(to: hourMarkProximalPoint)
@@ -209,7 +219,7 @@ public class CrossPlatformClockFaceView {
             let textPosition = CTLineGetImageBounds(line, context)
             let textSize : CGSize = textPosition.size
             
-            let angleCorrection = CGFloat(-1.0 * CGFloat(hour) * rotationEachHour)
+            let angleCorrection = CGFloat(-1.0 * CGFloat(hour) * viewModel.rotationEachHour)
             let textBaseCenterPoint = CGPoint(x: hourMarkProximalPoint.x,
                                               y: hourMarkProximalPoint.y + (1 * textSize.height) + self.clockFacePadding)
             self.drawWithBasePoint(
@@ -224,8 +234,8 @@ public class CrossPlatformClockFaceView {
         //
         // hands on the clock
         //
-        let hour = Double(clockTime.hour)
-        let minute = Double(clockTime.minute)
+        let hour = Double(viewModel.clockTime.hour)
+        let minute = Double(viewModel.clockTime.minute)
         context.setStrokeColor(self.handsColor)
         context.setLineWidth(self.handsWidth)
         let handsStartPoint = CGPoint.zero
@@ -243,7 +253,7 @@ public class CrossPlatformClockFaceView {
         
         context.saveGState()
         let hourHandEndPoint = CGPoint(x: 0, y: -clockRadius * hourHandRatio)
-        context.rotate(by: (hour / Double(self.numberOfHours)) * (2 * Double.pi))
+        context.rotate(by: (hour / Double(self.viewModel.numberOfHours)) * (2 * Double.pi))
         let hourHandPath = CGMutablePath()
         hourHandPath.move(to: handsStartPoint)
         hourHandPath.addLine(to: hourHandEndPoint)

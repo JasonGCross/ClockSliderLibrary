@@ -9,10 +9,17 @@ import Foundation
 import CoreGraphics
 
 public class CrossPlatformThumbnailView {
+    
+    //
+    // properties
+    //
+    
+    // Attempt to keep only things that directly deal with view layout
+    // in this file (e.g. colors, widths, sizes).
+    // Move any underlying data or calculations to the View Model.
+    var viewModel: ThumbnailViewModel
     var thumbnailImage : CGImage?
     var thumbnailColor: CGColor?
-    var isHighlighted: Bool = false
-    
     let ringWidth: CGFloat
     let radiusClockCenterToSliderTrackCenter: CGFloat
     let clockRadius: CGFloat
@@ -24,7 +31,8 @@ public class CrossPlatformThumbnailView {
          _ringWidth: CGFloat,
          _clockRadius: CGFloat,
          _thumbnailImage: CGImage? = nil,
-         _thumbnailColor: CGColor? = nil) {
+         _thumbnailColor: CGColor? = nil,
+                _viewModel: ThumbnailViewModel? = nil) {
         
         ringWidth = _ringWidth
         halfSliderTrackWidth = (ringWidth / 2.0)
@@ -32,6 +40,12 @@ public class CrossPlatformThumbnailView {
         radiusClockCenterToSliderTrackCenter = clockRadius - halfSliderTrackWidth
         thumbnailImage = _thumbnailImage
         thumbnailColor = _thumbnailColor
+        if let safeViewModel = _viewModel {
+            self.viewModel = safeViewModel
+        }
+        else {
+            self.viewModel = ThumbnailViewModel()
+        }
     }
     
     // MARK: - drawing

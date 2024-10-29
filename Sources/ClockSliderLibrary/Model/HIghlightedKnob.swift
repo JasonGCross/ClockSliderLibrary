@@ -8,4 +8,5 @@
 public enum HighlightedKnob: Int {
     case start
     case finish
+    case neitherThumbKnob
 }
