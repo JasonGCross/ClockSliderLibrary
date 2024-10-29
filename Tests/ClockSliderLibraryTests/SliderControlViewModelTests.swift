@@ -22,7 +22,7 @@ struct SliderControlViewModelTests {
     ) {
         let timeSliceViewModel: TimeSliceViewModel = TimeSliceViewModel()
         let screenPoint: CGPoint = CGPoint(x: tuple.p1x, y: tuple.p1y)
-        let viewModel = SliderControlViewModel(
+        let viewModel = TimeRangeSliderController(
             clockRadius: 100,
             radiusClockCenterToSliderTrackCenter: 100 + (44 / 2),
             sliderViewModel: timeSliceViewModel)
@@ -46,7 +46,7 @@ struct SliderControlViewModelTests {
         let radiusClockCenterToSliderTrackCenter: CGFloat = 78
         let touchLocation = CGPoint(x: tuple.p1x, y: tuple.p1y)
         let timeSliceViewModel: TimeSliceViewModel = TimeSliceViewModel()
-        let viewModel = SliderControlViewModel(
+        let viewModel = TimeRangeSliderController(
             clockRadius: radius,
             radiusClockCenterToSliderTrackCenter: radiusClockCenterToSliderTrackCenter,
             sliderViewModel: timeSliceViewModel)
@@ -62,7 +62,7 @@ struct SliderControlViewModelTests {
         let radiusClockCenterToSliderTrackCenter: CGFloat = 78
         let touchLocation = CGPoint(x: 201.0, y: 201.0)
         let timeSliceViewModel: TimeSliceViewModel = TimeSliceViewModel()
-        let viewModel = SliderControlViewModel(
+        let viewModel = TimeRangeSliderController(
             clockRadius: radius,
             radiusClockCenterToSliderTrackCenter: radiusClockCenterToSliderTrackCenter,
             sliderViewModel: timeSliceViewModel)
@@ -82,7 +82,7 @@ struct SliderControlViewModelTests {
         let radius: CGFloat = 200
         let radiusClockCenterToSliderTrackCenter: CGFloat = 78
         let timeSliceViewModel: TimeSliceViewModel = TimeSliceViewModel(clockType: .twelveHourClock)
-        let viewModel = SliderControlViewModel(
+        let viewModel = TimeRangeSliderController(
             clockRadius: radius,
             radiusClockCenterToSliderTrackCenter: radiusClockCenterToSliderTrackCenter,
             sliderViewModel: timeSliceViewModel)
@@ -92,7 +92,7 @@ struct SliderControlViewModelTests {
         
         // there should be no difference between a 12-hour and 24-hour clock
         let tsModel2 = TimeSliceViewModel(clockType: .twelveHourClock)
-        let vm2 = SliderControlViewModel(
+        let vm2 = TimeRangeSliderController(
             clockRadius: radius,
             radiusClockCenterToSliderTrackCenter: radiusClockCenterToSliderTrackCenter,
             sliderViewModel: tsModel2)
@@ -112,7 +112,7 @@ struct SliderControlViewModelTests {
         let radius: CGFloat = 200
         let radiusClockCenterToSliderTrackCenter: CGFloat = 78
         let timeSliceViewModel: TimeSliceViewModel = TimeSliceViewModel(clockType: .twelveHourClock)
-        let viewModel = SliderControlViewModel(
+        let viewModel = TimeRangeSliderController(
             clockRadius: radius,
             radiusClockCenterToSliderTrackCenter: radiusClockCenterToSliderTrackCenter,
             sliderViewModel: timeSliceViewModel)
@@ -139,7 +139,7 @@ struct SliderControlViewModelTests {
         let radius: CGFloat = 200
         let radiusClockCenterToSliderTrackCenter: CGFloat = 78
         let timeSliceViewModel: TimeSliceViewModel = TimeSliceViewModel(clockType: .twentyFourHourClock)
-        let viewModel = SliderControlViewModel(
+        let viewModel = TimeRangeSliderController(
             clockRadius: radius,
             radiusClockCenterToSliderTrackCenter: radiusClockCenterToSliderTrackCenter,
             sliderViewModel: timeSliceViewModel)
@@ -148,7 +148,7 @@ struct SliderControlViewModelTests {
         
         // a 12-hour clock versus a 24-hour clock should have half the minutes
         let tsModel2 = TimeSliceViewModel(clockType: .twelveHourClock)
-        let vm2 = SliderControlViewModel(
+        let vm2 = TimeRangeSliderController(
             clockRadius: radius,
             radiusClockCenterToSliderTrackCenter: radiusClockCenterToSliderTrackCenter,
             sliderViewModel: tsModel2)
@@ -169,7 +169,7 @@ struct SliderControlViewModelTests {
             startTime: startTime
         )
         let screenPoint: CGPoint = CGPoint(x: tuple.px, y: tuple.py)
-        var viewModel = SliderControlViewModel(
+        var viewModel = TimeRangeSliderController(
             clockRadius: 100,
             radiusClockCenterToSliderTrackCenter: 100 + (44 / 2),
             sliderViewModel: timeSliceViewModel)
@@ -191,7 +191,7 @@ struct SliderControlViewModelTests {
             finishTime: finishTime
         )
         let screenPoint: CGPoint = CGPoint(x: tuple.px, y: tuple.py)
-        var viewModel = SliderControlViewModel(
+        var viewModel = TimeRangeSliderController(
             clockRadius: 100,
             radiusClockCenterToSliderTrackCenter: 100 + (44 / 2),
             sliderViewModel: timeSliceViewModel)
@@ -210,7 +210,7 @@ struct SliderControlViewModelTests {
         let radius: CGFloat = 200
         let radiusClockCenterToSliderTrackCenter: CGFloat = 78
         let touchLocation = CGPoint(x: 201.0, y: 201.0)
-        var viewModel = SliderControlViewModel(
+        var viewModel = TimeRangeSliderController(
             clockRadius: radius,
             radiusClockCenterToSliderTrackCenter: radiusClockCenterToSliderTrackCenter,
             sliderViewModel: timeSliceViewModel)

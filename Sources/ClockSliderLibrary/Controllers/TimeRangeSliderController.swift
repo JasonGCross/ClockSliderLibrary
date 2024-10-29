@@ -7,7 +7,7 @@
 
 import QuartzCore
 
-public struct SliderControlViewModel {
+public struct TimeRangeSliderController {
     
     // MARK:- other view models
     internal var clockFaceViewModel: ClockFaceViewModel
@@ -378,7 +378,7 @@ public struct SliderControlViewModel {
     }
 }
 
-extension SliderControlViewModel {
+extension TimeRangeSliderController {
     
     //MARK: - testing
     //*************************************************************************
