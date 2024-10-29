@@ -209,4 +209,13 @@ public struct ClockSliderViewModel {
         let roundedMinutes: Int = roundedRemainder + floor
         return roundedMinutes
     }
+    
+    public func originForThumbnail(_ minutes: Int) -> CGPoint {
+        var value = CGPoint.zero
+        let centerPoint = self.thumbnailCenterPoint(CGFloat(minutes))
+        let originPoint = CGPoint(x:centerPoint.x - halfSliderTrackWidth,
+                                  y:centerPoint.y - halfSliderTrackWidth)
+        value = originPoint
+        return value
+    }
 }
