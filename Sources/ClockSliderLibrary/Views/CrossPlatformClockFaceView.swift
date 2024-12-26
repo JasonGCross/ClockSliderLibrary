@@ -18,7 +18,7 @@ public class CrossPlatformClockFaceView {
     // Attempt to keep only things that directly deal with view layout
     // in this file (e.g. colors, widths, sizes).
     // Move any underlying data or calculations to the View Model.
-    var viewModel: ClockFaceViewModel
+    public var viewModel: ClockFaceViewModel
     
     var outerRingBackgroundColor : CGColor = CGColor.init(red: 0.8,
                                                      green: 0.8,
@@ -28,6 +28,23 @@ public class CrossPlatformClockFaceView {
                                                          green: 0.4,
                                                          blue: 0.4,
                                                          alpha: 1.00)
+    var fontAttributes: Dictionary<String, Any> = {
+        var attr = Dictionary<String, Any>()
+        if let systemFont = CTFontCreateUIFontForLanguage(CTFontUIFontType.system,
+                                                          14,
+                                                          nil) {
+            attr[kCTFontFamilyNameKey as String] = CTFontCopyFamilyName(systemFont)
+        }
+        else {
+            attr[kCTFontFamilyNameKey as String] = "HelveticaNeue-Light"
+        }
+        attr[kCTFontSizeAttribute as String] = 14
+        attr[kCTForegroundColorAttributeName as String] = CGColor.init(red: 0.380,
+                                                                       green: 0.380,
+                                                                       blue: 0.380,
+                                                                       alpha: 1.00)
+        return attr
+    }()
     var tickMarkColor = CGColor.init(red: 0,
                                      green: 0,
                                      blue: 0,
@@ -58,17 +75,12 @@ public class CrossPlatformClockFaceView {
     
     public init(_frame: CGRect,
          _ringWidth: CGFloat,
-         _viewModel: ClockFaceViewModel? = nil) {
+         _viewModel: ClockFaceViewModel) {
         ringWidth = _ringWidth
         let diameter = CGFloat(fminf(Float(_frame.size.width),
                                      Float(_frame.size.height)))
         clockRadius = diameter / 2.0
-        if let safeViewModel = _viewModel {
-            self.viewModel = safeViewModel
-        }
-        else  {
-            self.viewModel = ClockFaceViewModel()
-        }
+        self.viewModel = _viewModel
     }
     
     private func drawWithBasePoint(text: String,

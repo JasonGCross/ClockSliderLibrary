@@ -8,7 +8,7 @@
 import QuartzCore
 
 public struct ClockSliderViewModel {
-    var ringWidth: CGFloat
+    public var ringWidth: CGFloat
     let clockType: ClockType
     private var numberOfHours: Int { self.clockType.rawValue }
     var rotationEachHour: CGFloat { CGFloat(CGFloat(2 * Double.pi) / CGFloat(clockType.rawValue)) }

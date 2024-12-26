@@ -26,11 +26,17 @@ struct SliderControlViewModelTests {
         let size = CGSize(width: 2 * clockRadius, height: 2 * clockRadius)
         let frame = CGRect(origin: CGPoint.zero,
                            size: size)
+        let startTime = TimeOfDayModel(hour: 0, minute: 0)
+        let finishTime = TimeOfDayModel(hour: 3, minute: 0)
         
-        let viewModel = TimeRangeSliderController(
+        let viewModel = TimeRangeSliderControlViewModel(
             frame: frame,
             ringWidth: ringWidth,
-            clockType: ClockType.twelveHourClock)
+            clockType: ClockType.twelveHourClock,
+            timeOfDay: TimeOfDayModel.now,
+            sliderStartTime: startTime,
+            sliderEndTime: finishTime
+        )
         let sliderCenterPoint: CGPoint = viewModel.test_mapScreenPointToSliderCenterTrackPoint(screenPoint)
         #expect(abs(sliderCenterPoint.x - tuple.p2x) <= 0.0001)
         #expect(abs(sliderCenterPoint.y - tuple.p2y) <= 0.0001)
@@ -55,11 +61,17 @@ struct SliderControlViewModelTests {
         let size = CGSize(width: 2 * radius, height: 2 * radius)
         let frame = CGRect(origin: CGPoint.zero,
                            size: size)
+        let startTime = TimeOfDayModel(hour: 0, minute: 0)
+        let finishTime = TimeOfDayModel(hour: 3, minute: 0)
         
-        let viewModel = TimeRangeSliderController(
+        let viewModel = TimeRangeSliderControlViewModel(
             frame: frame,
             ringWidth: ringWidth,
-            clockType: ClockType.twelveHourClock)
+            clockType: ClockType.twelveHourClock,
+            timeOfDay: TimeOfDayModel.now,
+            sliderStartTime: startTime,
+            sliderEndTime: finishTime
+        )
         let mappedInterceptPoint: CGPoint? = viewModel.test_translateTouchLocationToSliderCenterPoint(touchLocation)
         try #require(nil != mappedInterceptPoint)
         let safeResult: CGPoint = mappedInterceptPoint!
@@ -76,11 +88,17 @@ struct SliderControlViewModelTests {
         let size = CGSize(width: 2 * radius, height: 2 * radius)
         let frame = CGRect(origin: CGPoint.zero,
                            size: size)
+        let startTime = TimeOfDayModel(hour: 0, minute: 0)
+        let finishTime = TimeOfDayModel(hour: 3, minute: 0)
         
-        let viewModel = TimeRangeSliderController(
+        let viewModel = TimeRangeSliderControlViewModel(
             frame: frame,
             ringWidth: ringWidth,
-            clockType: ClockType.twelveHourClock)
+            clockType: ClockType.twelveHourClock,
+            timeOfDay: TimeOfDayModel.now,
+            sliderStartTime: startTime,
+            sliderEndTime: finishTime
+        )
         
         let mappedInterceptPoint: CGPoint? = viewModel.test_translateTouchLocationToSliderCenterPoint(touchLocation)
         #expect(nil == mappedInterceptPoint)
@@ -102,21 +120,31 @@ struct SliderControlViewModelTests {
         let size = CGSize(width: 2 * radius, height: 2 * radius)
         let frame = CGRect(origin: CGPoint.zero,
                            size: size)
+        let startTime = TimeOfDayModel(hour: 0, minute: 0)
+        let finishTime = TimeOfDayModel(hour: 3, minute: 0)
         
-        let viewModel = TimeRangeSliderController(
+        let viewModel = TimeRangeSliderControlViewModel(
             frame: frame,
             ringWidth: ringWidth,
-            clockType: ClockType.twelveHourClock)
+            clockType: ClockType.twelveHourClock,
+            timeOfDay: TimeOfDayModel.now,
+            sliderStartTime: startTime,
+            sliderEndTime: finishTime
+        )
         
         let mappedInterceptPoint: CGPoint = CGPoint(x: tuple.x, y: tuple.y)
         let angle = viewModel.test_clockFaceAngle(mappedInterceptPoint)
         #expect(abs(angle - tuple.expectedAngle) <= 0.0001)
         
         // there should be no difference between a 12-hour and 24-hour clock
-        let vm2 = TimeRangeSliderController(
+        let vm2 = TimeRangeSliderControlViewModel(
             frame: frame,
             ringWidth: ringWidth,
-            clockType: ClockType.twentyFourHourClock)
+            clockType: ClockType.twentyFourHourClock,
+            timeOfDay: TimeOfDayModel.now,
+            sliderStartTime: startTime,
+            sliderEndTime: finishTime
+        )
         
         let angle2 = vm2.test_clockFaceAngle(mappedInterceptPoint)
         #expect(abs(angle2 - tuple.expectedAngle) <= 0.0001)
@@ -138,11 +166,17 @@ struct SliderControlViewModelTests {
         let size = CGSize(width: 2 * radius, height: 2 * radius)
         let frame = CGRect(origin: CGPoint.zero,
                            size: size)
-
-        let viewModel = TimeRangeSliderController(
+        let startTime = TimeOfDayModel(hour: 0, minute: 0)
+        let finishTime = TimeOfDayModel(hour: 3, minute: 0)
+        
+        let viewModel = TimeRangeSliderControlViewModel(
             frame: frame,
             ringWidth: ringWidth,
-            clockType: ClockType.twelveHourClock)
+            clockType: ClockType.twelveHourClock,
+            timeOfDay: TimeOfDayModel.now,
+            sliderStartTime: startTime,
+            sliderEndTime: finishTime
+        )
         
         let mappedInterceptPoint: CGPoint = CGPoint(x: tuple.x, y: tuple.y)
         let angle = viewModel.test_clockFaceAngle(mappedInterceptPoint)
@@ -171,18 +205,29 @@ struct SliderControlViewModelTests {
         let size = CGSize(width: 2 * radius, height: 2 * radius)
         let frame = CGRect(origin: CGPoint.zero,
                            size: size)
-        let viewModel = TimeRangeSliderController(
+        let startTime = TimeOfDayModel(hour: 0, minute: 0)
+        let finishTime = TimeOfDayModel(hour: 3, minute: 0)
+        
+        let viewModel = TimeRangeSliderControlViewModel(
             frame: frame,
             ringWidth: ringWidth,
-            clockType: ClockType.twentyFourHourClock)
+            clockType: ClockType.twentyFourHourClock,
+            timeOfDay: TimeOfDayModel.now,
+            sliderStartTime: startTime,
+            sliderEndTime: finishTime
+            )
         let minutes = viewModel.test_minutesForClockFaceAngle(tuple.angle)
         #expect(abs(CGFloat(minutes) - tuple.expectedMinutes) <= 1)
         
         // a 12-hour clock versus a 24-hour clock should have half the minutes
-        let vm2 = TimeRangeSliderController(
+        let vm2 = TimeRangeSliderControlViewModel(
             frame: frame,
             ringWidth: ringWidth,
-            clockType: ClockType.twelveHourClock)
+            clockType: ClockType.twelveHourClock,
+            timeOfDay: TimeOfDayModel.now,
+            sliderStartTime: startTime,
+            sliderEndTime: finishTime
+        )
         let minutes2 = vm2.test_minutesForClockFaceAngle(tuple.angle)
         let expectedMInutes2: CGFloat = tuple.expectedMinutes / 2.0
         #expect(abs(CGFloat(minutes2) - expectedMInutes2) <= 1)
@@ -202,11 +247,16 @@ struct SliderControlViewModelTests {
         let size = CGSize(width: 2 * radius, height: 2 * radius)
         let frame = CGRect(origin: CGPoint.zero,
                            size: size)
-
-        var viewModel = TimeRangeSliderController(
+        let finishTime = TimeOfDayModel(hour: 3, minute: 0)
+        
+        var viewModel = TimeRangeSliderControlViewModel(
             frame: frame,
             ringWidth: ringWidth,
-            clockType: ClockType.twelveHourClock)
+            clockType: ClockType.twelveHourClock,
+            timeOfDay: TimeOfDayModel.now,
+            sliderStartTime: startTime,
+            sliderEndTime: finishTime
+        )
         viewModel.timeSliceViewModel.startTime = startTime
         
         viewModel.adjustStartAndEndTimesDuringTracking(location: screenPoint, highlightedKnob: .start)
@@ -231,11 +281,16 @@ struct SliderControlViewModelTests {
         let size = CGSize(width: 2 * radius, height: 2 * radius)
         let frame = CGRect(origin: CGPoint.zero,
                            size: size)
+        let startTime = TimeOfDayModel(hour: 0, minute: 0)
         
-        var viewModel = TimeRangeSliderController(
+        var viewModel = TimeRangeSliderControlViewModel(
             frame: frame,
             ringWidth: ringWidth,
-            clockType: ClockType.twelveHourClock)
+            clockType: ClockType.twelveHourClock,
+            timeOfDay: TimeOfDayModel.now,
+            sliderStartTime: startTime,
+            sliderEndTime: finishTime
+        )
         viewModel.timeSliceViewModel.finishTime = finishTime
         
         viewModel.adjustStartAndEndTimesDuringTracking(location: screenPoint, highlightedKnob: .finish)
@@ -245,7 +300,6 @@ struct SliderControlViewModelTests {
     }
     
     @Test func validateNoChangeWhenSliderToInvalidPosition() {
-        let startTime = TimeOfDayModel(hour: 0, minute: 0)
         let radius: CGFloat = 200
         let radiusClockCenterToSliderTrackCenter: CGFloat = 78
         let touchLocation = CGPoint(x: 201.0, y: 201.0)
@@ -255,11 +309,17 @@ struct SliderControlViewModelTests {
         let size = CGSize(width: 2 * radius, height: 2 * radius)
         let frame = CGRect(origin: CGPoint.zero,
                            size: size)
+        let startTime = TimeOfDayModel(hour: 0, minute: 0)
+        let finishTime = TimeOfDayModel(hour: 3, minute: 0)
         
-        var viewModel = TimeRangeSliderController(
+        var viewModel = TimeRangeSliderControlViewModel(
             frame: frame,
             ringWidth: ringWidth,
-            clockType: ClockType.twelveHourClock)
+            clockType: ClockType.twelveHourClock,
+            timeOfDay: TimeOfDayModel.now,
+            sliderStartTime: startTime,
+            sliderEndTime: finishTime
+            )
         viewModel.timeSliceViewModel.startTime = startTime
 
         viewModel.adjustStartAndEndTimesDuringTracking(location: touchLocation, highlightedKnob: .start)

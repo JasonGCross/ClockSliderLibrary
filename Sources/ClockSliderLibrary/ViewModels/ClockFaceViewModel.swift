@@ -18,6 +18,12 @@ public struct ClockFaceViewModel {
     var rotationEachHour: CGFloat { CGFloat(CGFloat(2 * Double.pi) / CGFloat(clockType.rawValue)) }
     var clockTime = TimeOfDayModel.now
     
+    public init(clockType: ClockType = .twelveHourClock,
+                clockTime: TimeOfDayModel = TimeOfDayModel.now) {
+        self.clockType = clockType
+        self.clockTime = clockTime
+    }
+    
     internal static func getGlyphsFromString(_ textString: String,
                                              usingFont coreTextFont: CTFont,
                                              context: CGContext) -> [CGGlyph] {

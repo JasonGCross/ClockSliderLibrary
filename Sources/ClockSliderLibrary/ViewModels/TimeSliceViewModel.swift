@@ -108,7 +108,7 @@ public struct TimeSliceViewModel {
      is required or not.
      */
     
-    
+    //MARK:- properties
     // these 2 properties replace having 4 different subclasses
     var startTimeIsFixedToZero: Bool = false
     var clockType: ClockType = ClockType.twelveHourClock
@@ -159,6 +159,20 @@ public struct TimeSliceViewModel {
     
     var maxAllowedMinutes: Int { self.clockType.rawValue * 60 }
     
+    //MARK:- constructor
+    init(startTimeIsFixedToZero: Bool = false,
+         clockType: ClockType = ClockType.twelveHourClock,
+         startTime: TimeOfDayModel = TimeOfDayModel(),
+         finishTime: TimeOfDayModel = TimeOfDayModel(),
+         clockRotationCount: ClockRotationCount = ClockRotationCount.first,
+         maximumTimeDuration: Int? = nil
+    ) {
+        self.clockType = clockType
+        self.startTime = startTime
+        self.finishTime = finishTime
+    }
+    
+    //MARK:- functions
     func changeTimeOfDayUsingClockFaceTime(oldTimeOfDay: TimeOfDayModel, clockFaceTime newMinutes: Int) -> TimeOfDayModel {
         guard self.clockType != ClockType.twentyFourHourClock else {
             let newValue = TimeOfDayModel.timeModelFromMinutes(newMinutes)

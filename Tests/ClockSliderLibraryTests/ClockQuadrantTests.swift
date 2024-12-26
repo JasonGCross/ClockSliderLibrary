@@ -43,27 +43,27 @@ struct ClockQuadrantTests {
     
     @Test(arguments:[
         // 12-hour clock
-        (hours: 0  ,min: 13, expectedResult: ClockQuadrant.first.rawValue,  clockType: ClockType.twelveHourClock.rawValue),
-        (hours: 2  ,min: 21, expectedResult: ClockQuadrant.first.rawValue,  clockType: ClockType.twelveHourClock.rawValue),
-        (hours: 5  ,min: 33, expectedResult: ClockQuadrant.second.rawValue, clockType: ClockType.twelveHourClock.rawValue),
-        (hours: 3  ,min: 1,  expectedResult: ClockQuadrant.second.rawValue, clockType: ClockType.twelveHourClock.rawValue),
-        (hours: 6  ,min: 13, expectedResult: ClockQuadrant.third.rawValue,  clockType: ClockType.twelveHourClock.rawValue),
-        (hours: 8  ,min: 21, expectedResult: ClockQuadrant.third.rawValue,  clockType: ClockType.twelveHourClock.rawValue),
-        (hours: 9  ,min: 0,  expectedResult: ClockQuadrant.fourth.rawValue, clockType: ClockType.twelveHourClock.rawValue),
-        (hours: 11 ,min: 59, expectedResult: ClockQuadrant.fourth.rawValue, clockType: ClockType.twelveHourClock.rawValue),
+        (hour: 0  ,min: 13, expectedResult: ClockQuadrant.first.rawValue,  clockType: ClockType.twelveHourClock.rawValue),
+        (hour: 2  ,min: 21, expectedResult: ClockQuadrant.first.rawValue,  clockType: ClockType.twelveHourClock.rawValue),
+        (hour: 5  ,min: 33, expectedResult: ClockQuadrant.second.rawValue, clockType: ClockType.twelveHourClock.rawValue),
+        (hour: 3  ,min: 1,  expectedResult: ClockQuadrant.second.rawValue, clockType: ClockType.twelveHourClock.rawValue),
+        (hour: 6  ,min: 13, expectedResult: ClockQuadrant.third.rawValue,  clockType: ClockType.twelveHourClock.rawValue),
+        (hour: 8  ,min: 21, expectedResult: ClockQuadrant.third.rawValue,  clockType: ClockType.twelveHourClock.rawValue),
+        (hour: 9  ,min: 0,  expectedResult: ClockQuadrant.fourth.rawValue, clockType: ClockType.twelveHourClock.rawValue),
+        (hour: 11 ,min: 59, expectedResult: ClockQuadrant.fourth.rawValue, clockType: ClockType.twelveHourClock.rawValue),
         // 24-hour clock
-        (hours: 0  ,min: 13, expectedResult: ClockQuadrant.first.rawValue,  clockType: ClockType.twentyFourHourClock.rawValue),
-        (hours: 5  ,min: 21, expectedResult: ClockQuadrant.first.rawValue,  clockType: ClockType.twentyFourHourClock.rawValue),
-        (hours: 6  ,min: 33, expectedResult: ClockQuadrant.second.rawValue, clockType: ClockType.twentyFourHourClock.rawValue),
-        (hours: 11 ,min: 59, expectedResult: ClockQuadrant.second.rawValue, clockType: ClockType.twentyFourHourClock.rawValue),
-        (hours: 12 ,min: 13, expectedResult: ClockQuadrant.third.rawValue,  clockType: ClockType.twentyFourHourClock.rawValue),
-        (hours: 13 ,min: 21, expectedResult: ClockQuadrant.third.rawValue,  clockType: ClockType.twentyFourHourClock.rawValue),
-        (hours: 22 ,min: 0,  expectedResult: ClockQuadrant.fourth.rawValue, clockType: ClockType.twentyFourHourClock.rawValue),
-        (hours: 23 ,min: 59, expectedResult: ClockQuadrant.fourth.rawValue, clockType: ClockType.twentyFourHourClock.rawValue),
+        (hour: 0  ,min: 13, expectedResult: ClockQuadrant.first.rawValue,  clockType: ClockType.twentyFourHourClock.rawValue),
+        (hour: 5  ,min: 21, expectedResult: ClockQuadrant.first.rawValue,  clockType: ClockType.twentyFourHourClock.rawValue),
+        (hour: 6  ,min: 33, expectedResult: ClockQuadrant.second.rawValue, clockType: ClockType.twentyFourHourClock.rawValue),
+        (hour: 11 ,min: 59, expectedResult: ClockQuadrant.second.rawValue, clockType: ClockType.twentyFourHourClock.rawValue),
+        (hour: 12 ,min: 13, expectedResult: ClockQuadrant.third.rawValue,  clockType: ClockType.twentyFourHourClock.rawValue),
+        (hour: 13 ,min: 21, expectedResult: ClockQuadrant.third.rawValue,  clockType: ClockType.twentyFourHourClock.rawValue),
+        (hour: 22 ,min: 0,  expectedResult: ClockQuadrant.fourth.rawValue, clockType: ClockType.twentyFourHourClock.rawValue),
+        (hour: 23 ,min: 59, expectedResult: ClockQuadrant.fourth.rawValue, clockType: ClockType.twentyFourHourClock.rawValue),
         // greater than one rotation
-        (hours: 24  ,min: 13, expectedResult: ClockQuadrant.first.rawValue,  clockType: ClockType.twelveHourClock.rawValue),
+        (hour: 24  ,min: 13, expectedResult: ClockQuadrant.first.rawValue,  clockType: ClockType.twelveHourClock.rawValue),
         // negative minutes
-        (hours: 0  ,min: -5, expectedResult: ClockQuadrant.fourth.rawValue,  clockType: ClockType.twelveHourClock.rawValue),
+        (hour: 0  ,min: -5, expectedResult: ClockQuadrant.fourth.rawValue,  clockType: ClockType.twelveHourClock.rawValue),
     ]) func validateMappingMinutesToQuadrant(
         tuple: (hour: Int, min: Int, expectedResult: String, clockType: Int)
     ) {
