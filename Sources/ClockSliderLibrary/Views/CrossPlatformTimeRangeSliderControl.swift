@@ -129,7 +129,7 @@ public class CrossPlatformTimeRangeSliderControl {
     public var clockFaceFont: CTFont = CTFontCreateUIFontForLanguage(CTFontUIFontType.system,
                                                               14,
                                                               nil) ??
-    CTFontCreateWithName("SF Pro Text" as CFString,
+        CTFontCreateWithName("SF Pro Text" as CFString,
                                                      14,
                                                      nil) {
         willSet {
@@ -250,7 +250,7 @@ public class CrossPlatformTimeRangeSliderControl {
             self.clockSliderView?.viewModel.secondDayGradientFinishColor = newValue
         }
     }
-       
+    
     //MARK:- initialization
     public init(_frame: CGRect,
                 _ringWidth: CGFloat,
@@ -295,5 +295,22 @@ public class CrossPlatformTimeRangeSliderControl {
         context.restoreGState()
         
 
+    }
+    
+    //MARK: - functions
+    public func getStartTime() -> TimeOfDayModel {
+        return self.viewModel.timeSliceViewModel.startTime
+    }
+    
+    public func getFinishTime() -> TimeOfDayModel {
+        return self.viewModel.timeSliceViewModel.finishTime
+    }
+    
+    public func getClockRotationCount() -> ClockRotationCount {
+        return self.viewModel.timeSliceViewModel.clockRotationCount
+    }
+    
+    public func getSliderEndAngle() -> CGFloat {
+        return self.viewModel.clockSliderViewModel.sliderStartAngle
     }
 }

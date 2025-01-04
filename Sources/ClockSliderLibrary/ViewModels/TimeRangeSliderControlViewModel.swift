@@ -24,8 +24,8 @@ public struct TimeRangeSliderControlViewModel {
     /// minimum distance allowed to the center of the circle before drag events are ignored
     internal var dragTolerance: CGFloat = 30
     internal var startLockedToMidnight: Bool = false
-    internal var lastDraggedThumbKnob: HighlightedKnob = .neitherThumbKnob
-    internal var thumbWithHigherZIndex: HighlightedKnob = .neitherThumbKnob
+    public var lastDraggedThumbKnob: HighlightedKnob = .neitherThumbKnob
+    public var thumbWithHigherZIndex: HighlightedKnob = .neitherThumbKnob
     internal let angleEquivalentToOnePixel: CGFloat = CGFloat(Double.pi / 360.0)
     var incrementDurationInMinutes: Int = 5
     
