@@ -167,9 +167,12 @@ public struct TimeSliceViewModel {
          clockRotationCount: ClockRotationCount = ClockRotationCount.first,
          maximumTimeDuration: Int? = nil
     ) {
+        self.startTimeIsFixedToZero = startTimeIsFixedToZero
         self.clockType = clockType
         self.startTime = startTime
         self.finishTime = finishTime
+        self.clockRotationCount = clockRotationCount
+        self.maximumTimeDuration = maximumTimeDuration
     }
     
     //MARK:- functions

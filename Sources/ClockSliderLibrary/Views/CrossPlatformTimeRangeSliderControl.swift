@@ -19,9 +19,9 @@ public class CrossPlatformTimeRangeSliderControl {
     //
     // Sub-views
     //
-    var clockFaceView: CrossPlatformClockFaceView?
-    var startKnobView: CrossPlatformThumbnailView?
-    var finishKnobView: CrossPlatformThumbnailView?
+    public var clockFaceView: CrossPlatformClockFaceView?
+    public var startKnobView: CrossPlatformThumbnailView?
+    public var finishKnobView: CrossPlatformThumbnailView?
     public var clockSliderView: CrossPlatformClockSliderView?
     
     //
@@ -33,46 +33,73 @@ public class CrossPlatformTimeRangeSliderControl {
     // Move any underlying data or calculations to the View Model.
     
     /**
-     * The color of the track upon which the slider slides. This track is in a ring
-     * shape, and is outside the clock face itself (the circle with numbers and marks).
+     The color of the rectangle in which the clock sits (the square outside of the circle).
      */
-    var outerRingBackgroundColor : CGColor = CGColor.init(red: 0.086,
-                                                     green: 0.094,
-                                                     blue: 0.090,
-                                                     alpha: 1.00) {
+    public var clockContainerBackgroundColor: CGColor = CGColor.init(red: 0.086,
+                                                                     green: 0.094,
+                                                                     blue: 0.090,
+                                                                     alpha: 1.00) {
         willSet {
-            self.clockFaceView?.outerRingBackgroundColor = newValue
+            self.clockFaceView?.clockContainerColor = newValue
         }
     }
     
     /**
      * The color of the clock face itself (the circle with numbers and marks).
      */
-    var innerRingBackgroundColor: CGColor = CGColor.black {
+    public var clockFaceBackgroundColor: CGColor = CGColor.init(red: 0.086,
+                                                                green: 0.094,
+                                                                blue: 0.090,
+                                                                alpha: 1.00) {
         willSet {
-            self.clockFaceView?.innerRingBackgroundColor = newValue
+            self.clockFaceView?.clockFaceColor = newValue
+        }
+    }
+    
+    /**
+     * The color of the track upon which the slider slides. This track is in a ring
+     * shape, and is outside the clock face itself (the circle with numbers and marks).
+     */
+    public var outerRingBackgroundColor : CGColor = CGColor.init(red: 0.086,
+                                                                 green: 0.094,
+                                                                 blue: 0.090,
+                                                                 alpha: 1.00) {
+        willSet {
+            self.clockFaceView?.outerRingBackgroundColor = newValue
         }
     }
     
     /**
      * The foreground color of the clock face tick marks.
      */
-    var clockFaceTickMarkColor: CGColor = CGColor.init(red: 0.380,
-                                                  green: 0.380,
-                                                  blue: 0.380,
-                                                  alpha: 1.00) {
+    public var clockFaceTickMarkColor: CGColor = CGColor.init(red: 0.380,
+                                                              green: 0.380,
+                                                              blue: 0.380,
+                                                              alpha: 1.00) {
         willSet {
             self.clockFaceView?.tickMarkColor = newValue
         }
     }
     
-    var clockFaceTextSize: Float = 14 {
+    /**
+     The stroke color of the hour hand and the minute hand
+     */
+    public var clockFaceHandsColor: CGColor = CGColor.init(red: 0,
+                                                           green: 0,
+                                                           blue: 0,
+                                                           alpha: 1.00) {
         willSet {
-            clockFaceFontAttributes[kCTFontSizeAttribute as String] = CGFloat(newValue)
+            self.clockFaceView?.handsColor = newValue
         }
     }
     
-    var elapsedTimeTextSize: Float = 20 {
+    public var clockFaceTextSize: Float = 14 {
+        willSet {
+            self.clockFaceView?.fontAttributes[kCTFontSizeAttribute as String] = CGFloat(newValue)
+        }
+    }
+    
+    public var elapsedTimeTextSize: Float = 20 {
         willSet {
             elapsedTimeFontAttributes[kCTFontSizeAttribute as String] = CGFloat(newValue)
         }
@@ -81,37 +108,37 @@ public class CrossPlatformTimeRangeSliderControl {
     /**
      * The foreground color of the clock face digits.
      */
-    var clockFaceTextColor: CGColor = CGColor.init(red: 0.380,
-                                              green: 0.380,
-                                              blue: 0.380,
-                                              alpha: 1.00) {
+    public var clockFaceTextColor: CGColor = CGColor.init(red: 0.380,
+                                                          green: 0.380,
+                                                          blue: 0.380,
+                                                          alpha: 1.00) {
         willSet {
-            clockFaceFontAttributes[kCTForegroundColorAttributeName as String] = newValue
+            self.clockFaceView?.fontAttributes[kCTForegroundColorAttributeName as String] = newValue
         }
     }
     
-    var elapsedTimeTextColor: CGColor = CGColor.init(red: 0.380,
-                                                green: 0.380,
-                                                blue: 0.380,
-                                                alpha: 1.00) {
+    public var elapsedTimeTextColor: CGColor = CGColor.init(red: 0.380,
+                                                            green: 0.380,
+                                                            blue: 0.380,
+                                                            alpha: 1.00) {
         willSet {
             elapsedTimeFontAttributes[kCTForegroundColorAttributeName as String] = newValue
         }
     }
     
-    var clockFaceFont: CTFont = CTFontCreateUIFontForLanguage(CTFontUIFontType.system,
+    public var clockFaceFont: CTFont = CTFontCreateUIFontForLanguage(CTFontUIFontType.system,
                                                               14,
                                                               nil) ??
     CTFontCreateWithName("SF Pro Text" as CFString,
                                                      14,
                                                      nil) {
         willSet {
-            clockFaceFontAttributes[kCTFontFamilyNameKey as String] = CTFontCopyFamilyName(newValue)
-            clockFaceFontAttributes[kCTFontSizeAttribute as String] = CTFontGetSize(newValue)
+            self.clockFaceView?.fontAttributes[kCTFontFamilyNameKey as String] = CTFontCopyFamilyName(newValue)
+            self.clockFaceView?.fontAttributes[kCTFontSizeAttribute as String] = CTFontGetSize(newValue)
         }
     }
     
-    var clockFaceFontName: String? {
+    public var clockFaceFontName: String? {
         willSet {
             if let safeName: String = newValue {
                 let font : CTFont = CTFontCreateWithName(safeName as CFString,
@@ -122,7 +149,7 @@ public class CrossPlatformTimeRangeSliderControl {
         }
     }
     
-    var elapsedTimeFont: CTFont = CTFontCreateUIFontForLanguage(CTFontUIFontType.system,
+    public var elapsedTimeFont: CTFont = CTFontCreateUIFontForLanguage(CTFontUIFontType.system,
                                                                 20,
                                                                 nil) ??
     CTFontCreateWithName("SF Pro Text" as CFString, 20, nil) {
@@ -132,18 +159,12 @@ public class CrossPlatformTimeRangeSliderControl {
         }
     }
     
-    var clockFaceFontAttributes = Dictionary<String, Any>() {
+    internal var elapsedTimeFontAttributes  = Dictionary<String, Any>()
+    
+    
+    public var fontFamilyNameString: String = "HelveticaNeue-Light" {
         willSet {
-            self.clockFaceView?.fontAttributes = newValue
-        }
-    }
-    
-    var elapsedTimeFontAttributes  = Dictionary<String, Any>()
-    
-    
-    var fontFamilyNameString: String = "HelveticaNeue-Light" {
-        willSet {
-            clockFaceFontAttributes[kCTFontFamilyNameKey as String] = newValue as CFString
+            self.clockFaceView?.fontAttributes[kCTFontFamilyNameKey as String] = newValue as CFString
         }
     }
     
@@ -153,7 +174,7 @@ public class CrossPlatformTimeRangeSliderControl {
      * This image should be 42 pixels and circular.
      * This image must be in the XCAssetCatalog.
      */
-    var startThumbnailImage : CGImage? {
+    public var startThumbnailImage : CGImage? {
         willSet {
             self.startKnobView?.thumbnailImage = newValue
         }
@@ -165,7 +186,7 @@ public class CrossPlatformTimeRangeSliderControl {
      * This image should be 42 pixels and circular.
      * This image must be in the XCAssetCatalog.
      */
-    var finishTumbnailImage : CGImage?  {
+    public var finishTumbnailImage : CGImage?  {
         willSet {
             self.finishKnobView?.thumbnailImage = newValue
         }
@@ -176,10 +197,10 @@ public class CrossPlatformTimeRangeSliderControl {
      * The track uses this primary color scheme when the time span is between 0 and 12 hours.
      * This color is closest to the start position.
      */
-    var firstDayGradientStartColor : CGColor = CGColor.init(red: 0.933,
-                                                       green: 0.424,
-                                                       blue: 0.149,
-                                                       alpha: 1.00) {
+    public var firstDayGradientStartColor : CGColor = CGColor.init(red: 0.933,
+                                                                   green: 0.424,
+                                                                   blue: 0.149,
+                                                                   alpha: 1.00) {
         willSet {
             self.clockSliderView?.viewModel.firstDayGradientStartColor = newValue
         }
@@ -191,10 +212,10 @@ public class CrossPlatformTimeRangeSliderControl {
      * This color is closest to the finish position.
      */
     @IBInspectable
-    var firstDayGradientFinishColor : CGColor = CGColor.init(red: 0.965,
-                                                        green: 0.965,
-                                                        blue: 0.065,
-                                                        alpha: 1.00) {
+    public var firstDayGradientFinishColor : CGColor = CGColor.init(red: 0.965,
+                                                                    green: 0.965,
+                                                                    blue: 0.065,
+                                                                    alpha: 1.00) {
         willSet {
             self.clockSliderView?.viewModel.firstDayGradientFinishColor = newValue
         }
@@ -206,10 +227,10 @@ public class CrossPlatformTimeRangeSliderControl {
      * This color is closest to the start position.
      */
     @IBInspectable
-    var secondDayGradientStartColor : CGColor = CGColor.init(red: 0.072,
-                                                        green: 0.878,
-                                                        blue: 0.087,
-                                                        alpha: 1.00) {
+    public var secondDayGradientStartColor : CGColor = CGColor.init(red: 0.072,
+                                                                    green: 0.878,
+                                                                    blue: 0.087,
+                                                                    alpha: 1.00) {
         willSet {
             self.clockSliderView?.viewModel.secondDayGradientStartColor = newValue
         }
@@ -221,10 +242,10 @@ public class CrossPlatformTimeRangeSliderControl {
      * This color is closest to the finish position.
      */
     @IBInspectable
-    var secondDayGradientFinishColor : CGColor = CGColor.init(red: 0.833,
-                                                         green: 0.994,
-                                                         blue: 0.342,
-                                                         alpha: 1.00) {
+    public var secondDayGradientFinishColor : CGColor = CGColor.init(red: 0.833,
+                                                                     green: 0.994,
+                                                                     blue: 0.342,
+                                                                     alpha: 1.00) {
         willSet {
             self.clockSliderView?.viewModel.secondDayGradientFinishColor = newValue
         }
@@ -248,11 +269,10 @@ public class CrossPlatformTimeRangeSliderControl {
         clockFaceView = CrossPlatformClockFaceView(_frame: _frame,
                                                    _ringWidth: _ringWidth,
                                                    _viewModel: viewModel.clockFaceViewModel)
-        startKnobView = CrossPlatformThumbnailView(_frame: _frame,
-                                                   _ringWidth: _ringWidth,
+        clockSliderView = CrossPlatformClockSliderView(viewModel: viewModel.clockSliderViewModel)
+        startKnobView = CrossPlatformThumbnailView(_ringWidth: _ringWidth,
                                                    _clockRadius: clockRadius)
-        finishKnobView = CrossPlatformThumbnailView(_frame: _frame,
-                                               _ringWidth: _ringWidth,
+        finishKnobView = CrossPlatformThumbnailView(_ringWidth: _ringWidth,
                                                     _clockRadius: clockRadius)
     }
     

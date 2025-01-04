@@ -18,8 +18,8 @@ public class CrossPlatformThumbnailView {
     // in this file (e.g. colors, widths, sizes).
     // Move any underlying data or calculations to the View Model.
     var viewModel: ThumbnailViewModel
-    var thumbnailImage : CGImage?
-    var thumbnailColor: CGColor?
+    public var thumbnailImage : CGImage?
+    public var thumbnailColor: CGColor?
     let ringWidth: CGFloat
     let radiusClockCenterToSliderTrackCenter: CGFloat
     let clockRadius: CGFloat
@@ -27,12 +27,11 @@ public class CrossPlatformThumbnailView {
     internal let angleEquivalentToOnePixel: CGFloat = CGFloat(Double.pi / 360.0)
     public var drawableEndAngle: CGFloat = 0
     
-    public init(_frame: CGRect,
-         _ringWidth: CGFloat,
+    public init(_ringWidth: CGFloat,
          _clockRadius: CGFloat,
          _thumbnailImage: CGImage? = nil,
          _thumbnailColor: CGColor? = nil,
-                _viewModel: ThumbnailViewModel? = nil) {
+         _viewModel: ThumbnailViewModel? = nil) {
         
         ringWidth = _ringWidth
         halfSliderTrackWidth = (ringWidth / 2.0)
