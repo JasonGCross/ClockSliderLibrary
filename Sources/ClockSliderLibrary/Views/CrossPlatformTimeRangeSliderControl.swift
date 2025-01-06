@@ -257,23 +257,35 @@ public class CrossPlatformTimeRangeSliderControl {
                 _clockType: ClockType,
                 _timeOfDay: TimeOfDayModel,
                 _sliderStartTime: TimeOfDayModel,
-                _sliderEndTime: TimeOfDayModel) {
+                _sliderEndTime: TimeOfDayModel,
+                _screenScale: CGFloat
+    ) {
         viewModel = TimeRangeSliderControlViewModel(frame: _frame,
                                                     ringWidth: _ringWidth,
                                                     clockType: _clockType,
                                                     timeOfDay: _timeOfDay,
                                                     sliderStartTime: _sliderStartTime,
-                                                    sliderEndTime: _sliderEndTime)
+                                                    sliderEndTime: _sliderEndTime,
+                                                    screenScale: _screenScale
+        )
+        
+        // access the required 4 other cross platform view models
+        let clockFaceViewModel = viewModel.clockFaceViewModel
+        let clockSliderViewModel = viewModel.clockSliderViewModel
+        let startKnobViewModel = viewModel.startKnobViewModel
+        let finishKnobViewModel = viewModel.finishKnobViewModel
         
         let clockRadius = self.viewModel.clockRadius
         clockFaceView = CrossPlatformClockFaceView(_frame: _frame,
                                                    _ringWidth: _ringWidth,
-                                                   _viewModel: viewModel.clockFaceViewModel)
-        clockSliderView = CrossPlatformClockSliderView(viewModel: viewModel.clockSliderViewModel)
+                                                   _viewModel: clockFaceViewModel)
+        clockSliderView = CrossPlatformClockSliderView(viewModel: clockSliderViewModel)
         startKnobView = CrossPlatformThumbnailView(_ringWidth: _ringWidth,
-                                                   _clockRadius: clockRadius)
+                                                   _clockRadius: clockRadius,
+                                                   _viewModel: startKnobViewModel)
         finishKnobView = CrossPlatformThumbnailView(_ringWidth: _ringWidth,
-                                                    _clockRadius: clockRadius)
+                                                    _clockRadius: clockRadius,
+                                                    _viewModel: finishKnobViewModel)
     }
     
     //MARK: - drawing

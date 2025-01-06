@@ -14,7 +14,7 @@ import Foundation
  Each hand moves in very fine movements, such that its angle can be used to
  determine a time in hours, minutes, seconds, and fraction of seconds.
  */
-public struct TimeSliceViewModel {
+public class TimeSliceViewModel: NSObject {
     
     
     /*
@@ -195,13 +195,13 @@ public struct TimeSliceViewModel {
         return newTimeOfDay
     }
     
-    mutating func changeStartTimeOfDayUsingClockFaceTime(_ minutes: Int) {
+    func changeStartTimeOfDayUsingClockFaceTime(_ minutes: Int) {
         guard false == self.startTimeIsFixedToZero else { return }
         let newValue = self.changeTimeOfDayUsingClockFaceTime(oldTimeOfDay: self.startTime, clockFaceTime: minutes)
         self.startTime = newValue
     }
     
-    mutating func changeFinishTimeOfDayUsingClockFaceTime(_ minutes: Int) {
+    func changeFinishTimeOfDayUsingClockFaceTime(_ minutes: Int) {
         let newValue = self.changeTimeOfDayUsingClockFaceTime(oldTimeOfDay: self.finishTime, clockFaceTime: minutes)
         self.finishTime = newValue
     }
@@ -244,13 +244,13 @@ public struct TimeSliceViewModel {
         return selectedTime
     }
     
-    mutating func advanceRotationCountIfAllowed() {
+    func advanceRotationCountIfAllowed() {
         if (self.maximumTimeDuration == nil) || (self.maximumTimeDuration! > oneRotation) {
             self.clockRotationCount.incrementCount()
         }
     }
     
-    mutating func setStartDayOrNight(_ dayOrNight: DayOrNight) -> Void {
+    func setStartDayOrNight(_ dayOrNight: DayOrNight) -> Void {
         // for a 24-hour clock, this method has no effect
         guard self.clockType == ClockType.twelveHourClock else { return }
         // don't bother doing anything if there is no change
@@ -261,7 +261,7 @@ public struct TimeSliceViewModel {
         self.startTime.setHours(newHours)
     }
     
-    mutating func setFinishDayOrNight(_ dayOrNight: DayOrNight) -> Void {
+    func setFinishDayOrNight(_ dayOrNight: DayOrNight) -> Void {
         // for a 24-hour clock, this method has no effect
         guard self.clockType == ClockType.twelveHourClock else { return }
         // don't bother doing anything if there is no change
@@ -281,7 +281,7 @@ public struct TimeSliceViewModel {
         return Int(safeMinutes.rounded())
     }
     
-    internal mutating func changeRotationCountIfNeeded(_ oldTimeRange: Int, newTimeRange: Int) {
+    internal func changeRotationCountIfNeeded(_ oldTimeRange: Int, newTimeRange: Int) {
         
         // the arc between start and finish is almost a complete circle, then changes over to a small circle
         if ((oldTimeRange > almostFullRotation) &&

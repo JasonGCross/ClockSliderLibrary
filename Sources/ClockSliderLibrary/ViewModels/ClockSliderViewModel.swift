@@ -7,7 +7,7 @@
 
 import QuartzCore
 
-public struct ClockSliderViewModel {
+public class ClockSliderViewModel: NSObject {
     public var ringWidth: CGFloat
     let clockType: ClockType
     private var numberOfHours: Int { self.clockType.rawValue }
@@ -78,7 +78,8 @@ public struct ClockSliderViewModel {
          _sliderStartAngle: CGFloat,
          _sliderEndAngle: CGFloat,
          _clockRotationCount: ClockRotationCount,
-         _screenScale: CGFloat) {
+         _screenScale: CGFloat
+    ) {
         clockType = _clockType
         ringWidth = _ringWidth
         halfSliderTrackWidth = (ringWidth / 2.0)
@@ -94,10 +95,11 @@ public struct ClockSliderViewModel {
         sliderEndAngle = _sliderEndAngle
         clockRotationCount = _clockRotationCount
         
+        super.init()
         self.breakStartAndFinishColorsIntoComponents()
     }
     
-    mutating func setClock(startAngle: CGFloat,
+    func setClock(startAngle: CGFloat,
                   finishAngle: CGFloat,
                   clockDuration: Int,
                   rotationCount: ClockRotationCount) {
@@ -107,7 +109,7 @@ public struct ClockSliderViewModel {
         self.clockRotationCount = rotationCount
     }
     
-    fileprivate mutating func breakStartAndFinishColorsIntoComponents() -> Void {
+    fileprivate func breakStartAndFinishColorsIntoComponents() -> Void {
         self.firstDayGradientStartColor.getRed(&firstDayStartRed,
                                                green: &firstDayStartGreen,
                                                blue: &firstDayStartBlue,

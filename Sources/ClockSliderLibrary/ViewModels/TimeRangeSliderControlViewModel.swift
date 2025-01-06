@@ -7,7 +7,7 @@
 
 import QuartzCore
 
-public struct TimeRangeSliderControlViewModel {
+public class TimeRangeSliderControlViewModel: NSObject {
     
     // MARK:- other view models
     public var clockFaceViewModel: ClockFaceViewModel
@@ -24,7 +24,30 @@ public struct TimeRangeSliderControlViewModel {
     /// minimum distance allowed to the center of the circle before drag events are ignored
     internal var dragTolerance: CGFloat = 30
     internal var startLockedToMidnight: Bool = false
-    public var lastDraggedThumbKnob: HighlightedKnob = .neitherThumbKnob
+    public var lastDraggedThumbKnob: HighlightedKnob  {
+        get {
+            if self.startKnobViewModel.isHighlighted {
+                return HighlightedKnob.start
+            }
+            else if self.finishKnobViewModel.isHighlighted {
+                return HighlightedKnob.finish
+            }
+                return HighlightedKnob.neitherThumbKnob
+        }
+        set {
+            switch newValue {
+                case HighlightedKnob.start:
+                    self.startKnobViewModel.isHighlighted = true
+                    self.finishKnobViewModel.isHighlighted = false
+                case HighlightedKnob.finish:
+                    self.startKnobViewModel.isHighlighted = false
+                    self.finishKnobViewModel.isHighlighted = true
+                case .neitherThumbKnob:
+                    self.startKnobViewModel.isHighlighted = false
+                    self.finishKnobViewModel.isHighlighted = false
+            }
+        }
+    }
     public var thumbWithHigherZIndex: HighlightedKnob = .neitherThumbKnob
     internal let angleEquivalentToOnePixel: CGFloat = CGFloat(Double.pi / 360.0)
     var incrementDurationInMinutes: Int = 5
@@ -63,12 +86,16 @@ public struct TimeRangeSliderControlViewModel {
                 clockType: ClockType,
                 timeOfDay: TimeOfDayModel,
                 sliderStartTime: TimeOfDayModel,
-                sliderEndTime: TimeOfDayModel
+                sliderEndTime: TimeOfDayModel,
+                screenScale: CGFloat
     ) {
+        // create 5 other required view models
+        // 1.
         self.clockFaceViewModel = ClockFaceViewModel(clockType: clockType,
                                                      clockTime: timeOfDay)
         
         var (sliderStartAngle, sliderEndAngle): (CGFloat, CGFloat) = (0.0, 0.0)
+        // 2.
         self.clockSliderViewModel = ClockSliderViewModel(
             _frame: frame,
             _clockType: clockType,
@@ -76,15 +103,23 @@ public struct TimeRangeSliderControlViewModel {
             _sliderStartAngle: sliderStartAngle,
             _sliderEndAngle: sliderEndAngle,
             _clockRotationCount: ClockRotationCount.first,
-            _screenScale: 1
+            _screenScale: screenScale
         )
         
+        // 3.
+        // this keeps track of the position of the thumbs (based on times / angles)
         self.timeSliceViewModel = TimeSliceViewModel(
             clockType: clockType,
             startTime: sliderStartTime,
             finishTime: sliderEndTime
         )
+        
+        // 4.
+        // simply tracks touches and highlighted state
         self.startKnobViewModel = ThumbnailViewModel()
+        
+        // 5.
+        // simply tracks touches and highlighted state
         self.finishKnobViewModel = ThumbnailViewModel()
         
         let diameter = CGFloat(fminf(Float(frame.size.width),
@@ -96,7 +131,7 @@ public struct TimeRangeSliderControlViewModel {
         // uses the fact that lines are stroked half on each side of the line
         self.radiusClockCenterToSliderTrackCenter = clockRadius - halfSliderTrackWidth
         
-        
+        super.init()
         // re-calculate after all stored properties are initialized
         (sliderStartAngle, sliderEndAngle) = self.calculateSliderStartAndFinishAngles()
         self.clockSliderViewModel = ClockSliderViewModel(
@@ -106,7 +141,7 @@ public struct TimeRangeSliderControlViewModel {
             _sliderStartAngle: sliderStartAngle,
             _sliderEndAngle: sliderEndAngle,
             _clockRotationCount: ClockRotationCount.first,
-            _screenScale: 1
+            _screenScale: screenScale
         )
     }
     
@@ -126,7 +161,7 @@ public struct TimeRangeSliderControlViewModel {
     }
     
     //MARK:- touch handling
-    public mutating func beginTracking(at location: CGPoint) {
+    public func beginTracking(at location: CGPoint) {
         self.previousTouchPoint = location
         
         // hit test the thumbnail layers
@@ -139,28 +174,28 @@ public struct TimeRangeSliderControlViewModel {
         // case 1
         if (self.startLockedToMidnight) {
             if (self.finishKnobViewModel.touchPointIsInsideThisView(self.previousTouchPoint)) {
-                self.finishKnobViewModel.isHighlighted = true
+                self.lastDraggedThumbKnob = HighlightedKnob.finish
             }
         }
         else if (self.lastDraggedThumbKnob == HighlightedKnob.finish) {
             if (self.finishKnobViewModel.touchPointIsInsideThisView(self.previousTouchPoint)) {
-                self.finishKnobViewModel.isHighlighted = true
+                self.lastDraggedThumbKnob = HighlightedKnob.finish
             }
             else if(self.startKnobViewModel.touchPointIsInsideThisView(self.previousTouchPoint)) {
-                self.startKnobViewModel.isHighlighted = true
+                self.lastDraggedThumbKnob = HighlightedKnob.start
             }
         }
         else {
             if(self.startKnobViewModel.touchPointIsInsideThisView(self.previousTouchPoint)) {
-                self.startKnobViewModel.isHighlighted = true
+                self.lastDraggedThumbKnob = HighlightedKnob.start
             }
             else if (self.finishKnobViewModel.touchPointIsInsideThisView(self.previousTouchPoint)) {
-                self.finishKnobViewModel.isHighlighted = true
+                self.lastDraggedThumbKnob = HighlightedKnob.finish
             }
         }
     }
     
-    public mutating func continueTracking(location: CGPoint) {
+    public func continueTracking(location: CGPoint) {
         let touchPoint: CGPoint = location
         
         // 1. determine by how much the user has dragged
@@ -169,7 +204,8 @@ public struct TimeRangeSliderControlViewModel {
         
         // This view model does not have to keep track of the angle of the thumbnail
         // or the start or finish time. Other view models store this information.
-        // But it does need to make sure the appropriate views update themselves.
+        // The NSView / UIView which calls this method is responsible for asking the view hierarchy
+        // to redraw / update.
         
         // old code: ClockSliderview.setClock was called (resulted in a redraw)
         
@@ -183,7 +219,7 @@ public struct TimeRangeSliderControlViewModel {
         }
     }
     
-    public mutating func endTracking(location: CGPoint) {
+    public func endTracking(location: CGPoint) {
         // during tracking, we want a smooth animation, so allow selecting any number of minutes
         // after the user is finished, clean up by moving to the nearest allowable minute
 
@@ -194,28 +230,27 @@ public struct TimeRangeSliderControlViewModel {
         }
         
         if(self.startKnobViewModel.isHighlighted) {
-            if !(newTimeSpan <= self.timeSliceViewModel.maxAllowedMinutes) {
+            if (newTimeSpan > self.timeSliceViewModel.maxAllowedMinutes) {
                 let currentEndThumb = self.clockSliderViewModel.thumbnailCenterPoint(self.getFinishTime().totalMinutes)
                 let maximumMinutes = self.maximumAllowedStartMinutesStartingFromFinishThumbCenter(currentEndThumb)
                 self.timeSliceViewModel.startTime = TimeOfDayModel.timeModelFromMinutes(maximumMinutes)
             }
-            let roundedMinutes = ClockSliderViewModel.roundMinutesToMatchIncrementDuration(self.getFinishTime().totalMinutes,
+            let roundedMinutes = ClockSliderViewModel.roundMinutesToMatchIncrementDuration(self.getStartTime().totalMinutes,
                                                                                            incrementDuration: self.incrementDurationInMinutes)
             self.timeSliceViewModel.startTime = TimeOfDayModel.timeModelFromMinutes(roundedMinutes)
         }
         else if (self.finishKnobViewModel.isHighlighted) {
-            if !(newTimeSpan <= self.timeSliceViewModel.maxAllowedMinutes) {
+            if (newTimeSpan > self.timeSliceViewModel.maxAllowedMinutes) {
                 let currentStartThumb = self.clockSliderViewModel.thumbnailCenterPoint(self.getStartTime().totalMinutes)
                 let maximumMinutes = self.maximumAllowedFinishMinutesStartingFromStartThumbCenter(currentStartThumb)
                 self.timeSliceViewModel.finishTime = TimeOfDayModel.timeModelFromMinutes(maximumMinutes)
             }
-            let roundedMinutes = ClockSliderViewModel.roundMinutesToMatchIncrementDuration(self.getStartTime().totalMinutes,
+            let roundedMinutes = ClockSliderViewModel.roundMinutesToMatchIncrementDuration(self.getFinishTime().totalMinutes,
                                                                                            incrementDuration: self.incrementDurationInMinutes)
             self.timeSliceViewModel.finishTime = TimeOfDayModel.timeModelFromMinutes(roundedMinutes)
         }
         
-        self.startKnobViewModel.isHighlighted = false
-        self.finishKnobViewModel.isHighlighted = false
+        self.lastDraggedThumbKnob = HighlightedKnob.neitherThumbKnob
     }
     
     //MARK: - private helpers
@@ -420,7 +455,7 @@ public struct TimeRangeSliderControlViewModel {
         return value
     }
     
-    internal mutating func adjustStartAndEndTimesDuringTracking(location: CGPoint, highlightedKnob: HighlightedKnob) {
+    internal func adjustStartAndEndTimesDuringTracking(location: CGPoint, highlightedKnob: HighlightedKnob) {
         //1. Screen Point:  e.g. (x=200, y=75)
         //The user's drag is reported in absolute screen coordinates.
         let screenPoint: CGPoint = location
@@ -455,8 +490,10 @@ public struct TimeRangeSliderControlViewModel {
         //is required or not.
         switch highlightedKnob {
         case .start:
+            self.clockSliderViewModel.sliderStartAngle = angle
             self.timeSliceViewModel.changeStartTimeOfDayUsingClockFaceTime(rawMinutes)
         case .finish:
+            self.clockSliderViewModel.sliderEndAngle = angle
             self.timeSliceViewModel.changeFinishTimeOfDayUsingClockFaceTime(rawMinutes)
         case .neitherThumbKnob:
             break
