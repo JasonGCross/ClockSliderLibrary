@@ -176,14 +176,14 @@ public class TimeSliceViewModel: NSObject {
     }
     
     //MARK:- functions
-    func changeTimeOfDayUsingClockFaceTime(oldTimeOfDay: TimeOfDayModel, clockFaceTime newMinutes: Int) -> TimeOfDayModel {
+    func changeTimeOfDayUsingClockFaceTime(oldTimeOfDay: TimeOfDayModel, clockFaceTime newMinutes: CGFloat) -> TimeOfDayModel {
         guard self.clockType != ClockType.twentyFourHourClock else {
-            let newValue = TimeOfDayModel.timeModelFromMinutes(newMinutes)
+            let newValue = TimeOfDayModel.timeModelFromMinutes(Int(newMinutes.rounded(FloatingPointRoundingRule.down)))
             return newValue
         }
         
         // now guaranteed to be working with a 12-hour clock
-        let safeMinutes = TimeSliceViewModel.convertMinutesToSafeMinutes(newMinutes, clockType: self.clockType)
+        let safeMinutes = TimeSliceViewModel.convertMinutesToSafeMinutes(Int(newMinutes.rounded(FloatingPointRoundingRule.down)), clockType: self.clockType)
         
         // this is the value which will be returned
         var newTimeOfDay: TimeOfDayModel = oldTimeOfDay
@@ -195,13 +195,13 @@ public class TimeSliceViewModel: NSObject {
         return newTimeOfDay
     }
     
-    func changeStartTimeOfDayUsingClockFaceTime(_ minutes: Int) {
+    func changeStartTimeOfDayUsingClockFaceTime(_ minutes: CGFloat) {
         guard false == self.startTimeIsFixedToZero else { return }
         let newValue = self.changeTimeOfDayUsingClockFaceTime(oldTimeOfDay: self.startTime, clockFaceTime: minutes)
         self.startTime = newValue
     }
     
-    func changeFinishTimeOfDayUsingClockFaceTime(_ minutes: Int) {
+    func changeFinishTimeOfDayUsingClockFaceTime(_ minutes: CGFloat) {
         let newValue = self.changeTimeOfDayUsingClockFaceTime(oldTimeOfDay: self.finishTime, clockFaceTime: minutes)
         self.finishTime = newValue
     }

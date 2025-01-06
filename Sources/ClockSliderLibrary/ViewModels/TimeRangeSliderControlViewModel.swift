@@ -50,7 +50,7 @@ public class TimeRangeSliderControlViewModel: NSObject {
     }
     public var thumbWithHigherZIndex: HighlightedKnob = .neitherThumbKnob
     internal let angleEquivalentToOnePixel: CGFloat = CGFloat(Double.pi / 360.0)
-    var incrementDurationInMinutes: Int = 5
+    var incrementDurationInMinutes: Int = 30
     
     //MARK: - constructor
 //    init(clockFaceViewModel: ClockFaceViewModel,
@@ -256,20 +256,22 @@ public class TimeRangeSliderControlViewModel: NSObject {
     fileprivate func maximumAllowedStartMinutesStartingFromFinishThumbCenter(_ screenPoint: CGPoint) -> Int {
         let minutesToTravelBackwards: Int = self.maximumTimeSpanMinutes()
         let innerAngle: CGFloat = self.clockSliderViewModel.clockFaceAngle(screenMinutes: minutesToTravelBackwards)
-        return self.findMinutesOnClockCircle(screenPoint,
+        let minutesAsFloat = self.findMinutesOnClockCircle(screenPoint,
                                               innerAngle: innerAngle,
                                               clockwise: false)
+        return Int(minutesAsFloat.rounded())
     }
     
     fileprivate func maximumAllowedFinishMinutesStartingFromStartThumbCenter(_ screenPoint: CGPoint) -> Int {
         let desiredFinishMinutes: Int = self.maximumTimeSpanMinutes()
         let innerAngle: CGFloat = self.clockSliderViewModel.clockFaceAngle(screenMinutes: desiredFinishMinutes)
-        return self.findMinutesOnClockCircle(screenPoint,
+        let minutesAsFloat = self.findMinutesOnClockCircle(screenPoint,
                                               innerAngle: innerAngle,
                                               clockwise: true)
+        return Int(minutesAsFloat.rounded())
     }
     
-    internal func findMinutesOnClockCircle(_ screenPointA: CGPoint, innerAngle: CGFloat, clockwise: Bool) -> Int {
+    internal func findMinutesOnClockCircle(_ screenPointA: CGPoint, innerAngle: CGFloat, clockwise: Bool) -> CGFloat {
         // see this site: http://math.stackexchange.com/questions/275201/how-to-find-an-end-point-of-an-arc-given-another-end-point-radius-and-arc-dire
         let mappedPointA = self.mapScreenPointToSliderCenterTrackPoint(screenPointA)
         let angleToStartPoint = CGFloat(atan2(mappedPointA.y, mappedPointA.x))
@@ -338,7 +340,7 @@ public class TimeRangeSliderControlViewModel: NSObject {
         return value
     }
     
-    fileprivate func minutesForThumnailCenter(_ cartesianCoordinatePoint: CGPoint) -> (minutes:Int, angle:CGFloat) {
+    fileprivate func minutesForThumnailCenter(_ cartesianCoordinatePoint: CGPoint) -> (minutes:CGFloat, angle:CGFloat) {
         let angle = self.translateSliderCenterPointToAngle(cartesianCoordinatePoint)
         if (angle.isNaN) {
             // try this calculation again
@@ -428,14 +430,14 @@ public class TimeRangeSliderControlViewModel: NSObject {
         return angle
     }
     
-    internal func minutesForClockFaceAngle(_ angle: CGFloat) -> Int {
+    internal func minutesForClockFaceAngle(_ angle: CGFloat) -> CGFloat {
         // angle = (minutes / ticksPerRevolution) * 2 * Pi
         // angle / (2 * Pi) = (minutes / ticksPerRevolution)
         // minutes = (angle * ticksPerRevolution) / (2 * Pi)
         let rawMinutes = (angle * CGFloat(self.clockType.minutesPerRevolution())) / CGFloat(2 * Double.pi)
-        let numberOfTicks: Int = Int(rawMinutes.rounded())
+        //let numberOfTicks: Int = Int(rawMinutes.rounded())
         
-        return numberOfTicks
+        return rawMinutes
     }
     
     public func originForThumbnail(_ minutes: Int) -> CGPoint {
@@ -516,7 +518,7 @@ extension TimeRangeSliderControlViewModel {
         return self.translateSliderCenterPointToAngle(point)
     }
 
-    func test_minutesForClockFaceAngle(_ angle: CGFloat) -> Int {
+    func test_minutesForClockFaceAngle(_ angle: CGFloat) -> CGFloat {
         return self.minutesForClockFaceAngle(angle)
     }
 }

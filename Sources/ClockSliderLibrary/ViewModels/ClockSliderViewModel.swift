@@ -246,7 +246,8 @@ public class ClockSliderViewModel: NSObject {
         let minutesAsFloat: CGFloat = CGFloat(minutes)
         let remainder: CGFloat = minutesAsFloat.truncatingRemainder(dividingBy: CGFloat(incrementDuration))
         let floor: Int = Int(round(minutesAsFloat - remainder))
-        let roundedRemainder: Int = Int(round(remainder / CGFloat(incrementDuration)) * CGFloat(incrementDuration))
+        let unroundedRemainder: CGFloat = (remainder / CGFloat(incrementDuration)) * CGFloat(incrementDuration)
+        let roundedRemainder: Int = Int(unroundedRemainder.rounded(.down))
         let roundedMinutes: Int = roundedRemainder + floor
         return roundedMinutes
     }
