@@ -51,7 +51,7 @@ import Foundation
         let viewModel = TimeSliceViewModel(
             clockType: .twelveHourClock,
             startTime: startTime)
-        viewModel.changeStartTimeOfDayUsingClockFaceTime(tuple.changedStartTime)
+        viewModel.changeStartTimeOfDayUsingClockFaceTime(CGFloat(tuple.changedStartTime))
         let expectedResult = TimeOfDayModel(hour: tuple.expectedHour, minute: tuple.expectedMin)
         #expect(viewModel.startTime == expectedResult)
     }
@@ -74,7 +74,7 @@ import Foundation
         let viewModel = TimeSliceViewModel(
             clockType: .twelveHourClock,
             finishTime: finishTime)
-        viewModel.changeFinishTimeOfDayUsingClockFaceTime(tuple.changedFinishTime)
+        viewModel.changeFinishTimeOfDayUsingClockFaceTime(CGFloat(tuple.changedFinishTime))
         let expectedResult = TimeOfDayModel(hour: tuple.expectedHour, minute: tuple.expectedMin)
         #expect(viewModel.finishTime == expectedResult)
     }
@@ -156,7 +156,8 @@ import Foundation
             finishTime: TimeOfDayModel(),
             clockRotationCount: ClockRotationCount.first,
             maximumTimeDuration: nil)
-        let actualResult = viewModel.changeTimeOfDayUsingClockFaceTime(oldTimeOfDay: startTime, clockFaceTime: tuple.changedStartTime)
+        let actualResult = viewModel.changeTimeOfDayUsingClockFaceTime(oldTimeOfDay: startTime,
+                                                                       clockFaceTime: CGFloat(tuple.changedStartTime))
         let expectedResult = TimeOfDayModel(hour: tuple.expectedHour, minute: tuple.expectedMin)
         #expect(actualResult == expectedResult)
         
@@ -167,7 +168,8 @@ import Foundation
             finishTime: TimeOfDayModel(),
             clockRotationCount: ClockRotationCount.second,
             maximumTimeDuration: nil)
-        let result2 = vm2.changeTimeOfDayUsingClockFaceTime(oldTimeOfDay: startTime, clockFaceTime: tuple.changedStartTime)
+        let result2 = vm2.changeTimeOfDayUsingClockFaceTime(oldTimeOfDay: startTime,
+                                                            clockFaceTime: CGFloat(tuple.changedStartTime))
         let expectedResult2 = TimeOfDayModel.timeModelFromMinutes(tuple.changedStartTime)
         #expect(result2 == expectedResult2)
     }
@@ -187,7 +189,7 @@ import Foundation
             finishTime: TimeOfDayModel(),
             clockRotationCount: ClockRotationCount.first,
             maximumTimeDuration: nil)
-        viewModel.changeStartTimeOfDayUsingClockFaceTime(tuple.changedStartTime)
+        viewModel.changeStartTimeOfDayUsingClockFaceTime(CGFloat(tuple.changedStartTime))
         let actualResult = viewModel.startTime
         let expectedResult = startTime
         #expect(actualResult == expectedResult)
