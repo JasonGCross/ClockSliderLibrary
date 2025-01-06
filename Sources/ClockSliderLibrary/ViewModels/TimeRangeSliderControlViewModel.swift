@@ -94,14 +94,13 @@ public class TimeRangeSliderControlViewModel: NSObject {
         self.clockFaceViewModel = ClockFaceViewModel(clockType: clockType,
                                                      clockTime: timeOfDay)
         
-        var (sliderStartAngle, sliderEndAngle): (CGFloat, CGFloat) = (0.0, 0.0)
         // 2.
         self.clockSliderViewModel = ClockSliderViewModel(
             _frame: frame,
             _clockType: clockType,
             _ringWidth: ringWidth,
-            _sliderStartAngle: sliderStartAngle,
-            _sliderEndAngle: sliderEndAngle,
+            _sliderStartMinutes: sliderStartTime.totalMinutes,
+            _sliderEndMinutes: sliderEndTime.totalMinutes,
             _clockRotationCount: ClockRotationCount.first,
             _screenScale: screenScale
         )
@@ -114,13 +113,15 @@ public class TimeRangeSliderControlViewModel: NSObject {
             finishTime: sliderEndTime
         )
         
+        let sliderStartAngle = clockSliderViewModel.sliderStartAngle
+        let sliderEndAngle = clockSliderViewModel.sliderEndAngle
         // 4.
         // simply tracks touches and highlighted state
-        self.startKnobViewModel = ThumbnailViewModel()
+        self.startKnobViewModel = ThumbnailViewModel(drawableEndAngle: sliderStartAngle)
         
         // 5.
         // simply tracks touches and highlighted state
-        self.finishKnobViewModel = ThumbnailViewModel()
+        self.finishKnobViewModel = ThumbnailViewModel(drawableEndAngle: sliderEndAngle)
         
         let diameter = CGFloat(fminf(Float(frame.size.width),
                                      Float(frame.size.height)))
@@ -132,24 +133,15 @@ public class TimeRangeSliderControlViewModel: NSObject {
         self.radiusClockCenterToSliderTrackCenter = clockRadius - halfSliderTrackWidth
         
         super.init()
-        // re-calculate after all stored properties are initialized
-        (sliderStartAngle, sliderEndAngle) = self.calculateSliderStartAndFinishAngles()
-        self.clockSliderViewModel = ClockSliderViewModel(
-            _frame: frame,
-            _clockType: clockType,
-            _ringWidth: ringWidth,
-            _sliderStartAngle: sliderStartAngle,
-            _sliderEndAngle: sliderEndAngle,
-            _clockRotationCount: ClockRotationCount.first,
-            _screenScale: screenScale
-        )
     }
     
     //MARK:- convenience getters
-    public func calculateSliderStartAndFinishAngles() -> (CGFloat, CGFloat) {
-        let startAngle = self.clockSliderViewModel.clockFaceAngle(screenMinutes: self.getStartTime().totalMinutes)
-        let endAngle = self.clockSliderViewModel.clockFaceAngle(screenMinutes: self.getFinishTime().totalMinutes)
-        return (startAngle, endAngle)
+    public func getDrawableStartAngle() -> CGFloat {
+        return self.clockSliderViewModel.sliderStartAngle
+    }
+    
+    public func getDrawableEndAngle() -> CGFloat {
+        return self.clockSliderViewModel.sliderEndAngle
     }
     
     func getStartTime() -> TimeOfDayModel {
@@ -492,9 +484,11 @@ public class TimeRangeSliderControlViewModel: NSObject {
         case .start:
             self.clockSliderViewModel.sliderStartAngle = angle
             self.timeSliceViewModel.changeStartTimeOfDayUsingClockFaceTime(rawMinutes)
+            self.startKnobViewModel.drawableEndAngle = angle
         case .finish:
             self.clockSliderViewModel.sliderEndAngle = angle
             self.timeSliceViewModel.changeFinishTimeOfDayUsingClockFaceTime(rawMinutes)
+            self.finishKnobViewModel.drawableEndAngle = angle
         case .neitherThumbKnob:
             break
         }

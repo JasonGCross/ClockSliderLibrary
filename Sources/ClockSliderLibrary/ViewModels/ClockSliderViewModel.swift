@@ -72,7 +72,8 @@ public class ClockSliderViewModel: NSObject {
     internal let angleEquivalentToOnePixel: CGFloat = CGFloat(Double.pi / 360.0)
     internal let thresholdForAdjustingArcRaduis = 2
     
-    public init(_frame: CGRect,
+    //MARK:- initializers
+    private init(_frame: CGRect,
          _clockType: ClockType,
          _ringWidth: CGFloat,
          _sliderStartAngle: CGFloat,
@@ -99,6 +100,43 @@ public class ClockSliderViewModel: NSObject {
         self.breakStartAndFinishColorsIntoComponents()
     }
     
+    public init(_frame: CGRect,
+         _clockType: ClockType,
+         _ringWidth: CGFloat,
+         _sliderStartMinutes: Int,
+         _sliderEndMinutes: Int,
+         _clockRotationCount: ClockRotationCount,
+         _screenScale: CGFloat
+    ) {
+        clockType = _clockType
+        ringWidth = _ringWidth
+        halfSliderTrackWidth = (ringWidth / 2.0)
+        screenScale = _screenScale
+        let diameter = CGFloat(fminf(Float(_frame.size.width),
+                                     Float(_frame.size.height)))
+        clockRadius = diameter / 2.0
+        
+        // uses the fact that lines are stroked half on each side of the line
+        radiusClockCenterToSliderTrackCenter = clockRadius - halfSliderTrackWidth
+        centerSliderTrackRadiusSquared = (radiusClockCenterToSliderTrackCenter * radiusClockCenterToSliderTrackCenter)
+        
+        let tempViewModel = ClockSliderViewModel(_frame: _frame,
+                                                 _clockType: _clockType,
+                                                 _ringWidth: _ringWidth,
+                                                 _sliderStartAngle: 0.0,
+                                                 _sliderEndAngle: 0.0,
+                                                 _clockRotationCount: _clockRotationCount,
+                                                 _screenScale: _screenScale
+        )
+        sliderStartAngle = tempViewModel.clockFaceAngle(screenMinutes: _sliderStartMinutes)
+        sliderEndAngle = tempViewModel.clockFaceAngle(screenMinutes: _sliderEndMinutes)
+        clockRotationCount = _clockRotationCount
+        
+        super.init()
+        self.breakStartAndFinishColorsIntoComponents()
+    }
+    
+    //MARK:- helper functions
     func setClock(startAngle: CGFloat,
                   finishAngle: CGFloat,
                   clockDuration: Int,

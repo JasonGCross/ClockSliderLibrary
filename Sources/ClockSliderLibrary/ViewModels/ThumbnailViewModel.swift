@@ -20,6 +20,11 @@ public class ThumbnailViewModel: NSObject {
     // so that the higher level view can determine if self.frame.contains the touch point or not
     public var viewDelegate: CocoaCocoaTouchViewInterface?
     public var isHighlighted: Bool = false
+    internal var drawableEndAngle: CGFloat = 0
+    
+    public init(drawableEndAngle: CGFloat) {
+        self.drawableEndAngle = drawableEndAngle
+    }
     
     func touchPointIsInsideThisView(_ touchPoint: CGPoint) -> Bool {
         guard let safeDelegate = viewDelegate else { return false }

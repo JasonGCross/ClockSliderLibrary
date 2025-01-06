@@ -48,7 +48,7 @@ import Foundation
         tuple: (startHour: Int, startMin: Int, changedStartTime: Int, expectedHour: Int, expectedMin: Int)
     ) throws {
         let startTime = TimeOfDayModel(hour: tuple.startHour, minute: tuple.startMin)
-        var viewModel = TimeSliceViewModel(
+        let viewModel = TimeSliceViewModel(
             clockType: .twelveHourClock,
             startTime: startTime)
         viewModel.changeStartTimeOfDayUsingClockFaceTime(tuple.changedStartTime)
@@ -71,7 +71,7 @@ import Foundation
         tuple: (finishHour: Int, finishMin: Int, changedFinishTime: Int, expectedHour: Int, expectedMin: Int)
     ) throws {
         let finishTime = TimeOfDayModel(hour: tuple.finishHour, minute: tuple.finishMin)
-        var viewModel = TimeSliceViewModel(
+        let viewModel = TimeSliceViewModel(
             clockType: .twelveHourClock,
             finishTime: finishTime)
         viewModel.changeFinishTimeOfDayUsingClockFaceTime(tuple.changedFinishTime)
@@ -180,7 +180,7 @@ import Foundation
         tuple: (startHour: Int, startMin: Int, changedStartTime: Int)
     ) {
         let startTime = TimeOfDayModel(hour: tuple.startHour, minute: tuple.startMin)
-        var viewModel = TimeSliceViewModel(
+        let viewModel = TimeSliceViewModel(
             startTimeIsFixedToZero: true,
             clockType: ClockType.twelveHourClock,
             startTime: startTime,
@@ -194,7 +194,7 @@ import Foundation
     }
     
     @Test func validateRotationCount() {
-        var viewModel = TimeSliceViewModel()
+        let viewModel = TimeSliceViewModel()
         #expect(viewModel.clockRotationCount == .first)
         
         viewModel.advanceRotationCountIfAllowed()
@@ -229,7 +229,7 @@ import Foundation
     }
     
     @Test func validateSettingStartDayOrNight() {
-        var viewModel = TimeSliceViewModel()
+        let viewModel = TimeSliceViewModel()
         
         // test string
         #expect(viewModel.startTime.amORpm ==  DayOrNight.am)
@@ -269,7 +269,7 @@ import Foundation
     }
     
     @Test func validateSettingFinishDayOrNight() {
-        var viewModel = TimeSliceViewModel()
+        let viewModel = TimeSliceViewModel()
         
         // test string
         #expect(viewModel.finishTime.amORpm ==  DayOrNight.am)
@@ -316,7 +316,7 @@ import Foundation
         tuple: (oldTimeRange: Int, newTimeRange: Int, initialRotationCount: Int, expectedRotationCount: Int)
     ) {
         let initialCount = ClockRotationCount(rawValue: tuple.initialRotationCount)!
-        var viewModel = TimeSliceViewModel(
+        let viewModel = TimeSliceViewModel(
             clockType: .twelveHourClock,
             clockRotationCount: initialCount
         )
@@ -324,7 +324,7 @@ import Foundation
         viewModel.changeRotationCountIfNeeded(tuple.oldTimeRange, newTimeRange: tuple.newTimeRange)
         #expect(viewModel.clockRotationCount.rawValue == tuple.expectedRotationCount)
         
-        var vm2 = TimeSliceViewModel(
+        let vm2 = TimeSliceViewModel(
             clockType: .twentyFourHourClock,
             clockRotationCount: initialCount
         )

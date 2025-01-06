@@ -25,7 +25,6 @@ public class CrossPlatformThumbnailView {
     let clockRadius: CGFloat
     let halfSliderTrackWidth: CGFloat
     internal let angleEquivalentToOnePixel: CGFloat = CGFloat(Double.pi / 360.0)
-    public var drawableEndAngle: CGFloat = 0
     
     public init(_ringWidth: CGFloat,
          _clockRadius: CGFloat,
@@ -55,10 +54,11 @@ public class CrossPlatformThumbnailView {
             let center = CGPoint(x: rect.size.width / 2.0, y: rect.size.height / 2.0)
             
             context.addArc(center: center,
-                            radius: halfSliderTrackWidth,
-                            startAngle: drawableEndAngle - CGFloat((Double.pi / 2.0)),
-                            endAngle: drawableEndAngle + CGFloat((Double.pi / 2.0)),
-                            clockwise: false)
+                           radius: halfSliderTrackWidth,
+                           startAngle: self.viewModel.drawableEndAngle - CGFloat((Double.pi / 2.0)),
+                           endAngle: self.viewModel.drawableEndAngle + CGFloat((Double.pi / 2.0)),
+                           clockwise: false
+            )
             context.closePath()
             context.fillPath()
             
