@@ -291,7 +291,8 @@ public class CrossPlatformClockFaceView {
         
         context.saveGState()
         let hourHandEndPoint = CGPoint(x: 0, y: -maxHandLength * hourHandRatio)
-        context.rotate(by: (hour / Double(self.viewModel.numberOfHours)) * (2 * Double.pi))
+        let fractionalHour = hour + (minute / 60.0)
+        context.rotate(by: (fractionalHour / Double(self.viewModel.numberOfHours)) * (2 * Double.pi))
         let hourHandPath = CGMutablePath()
         hourHandPath.move(to: handsStartPoint)
         hourHandPath.addLine(to: hourHandEndPoint)
