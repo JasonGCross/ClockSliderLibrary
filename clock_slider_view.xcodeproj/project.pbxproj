@@ -30,10 +30,19 @@
 		F6B68494205F47C50058595B /* NSString+drawWithBasePoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B68493205F47C50058595B /* NSString+drawWithBasePoint.swift */; };
 		F6B68496205F47E30058595B /* TouchableLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B68495205F47E30058595B /* TouchableLayer.swift */; };
 		F6B68498205F47FD0058595B /* ClockFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B68497205F47FD0058595B /* ClockFaceView.swift */; };
+		F6F39C9B2BEBED8F001C6AF9 /* clock_slider_viewUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F39C9A2BEBED8F001C6AF9 /* clock_slider_viewUITests.swift */; };
+		F6F39C9D2BEBED8F001C6AF9 /* clock_slider_viewUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F39C9C2BEBED8F001C6AF9 /* clock_slider_viewUITestsLaunchTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		F6B68466205F43930058595B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F6B68449205F43930058595B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F6B68450205F43930058595B;
+			remoteInfo = clock_slider_view;
+		};
+		F6F39C9E2BEBED8F001C6AF9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F6B68449205F43930058595B /* Project object */;
 			proxyType = 1;
@@ -70,6 +79,9 @@
 		F6B68493205F47C50058595B /* NSString+drawWithBasePoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSString+drawWithBasePoint.swift"; sourceTree = "<group>"; };
 		F6B68495205F47E30058595B /* TouchableLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchableLayer.swift; sourceTree = "<group>"; };
 		F6B68497205F47FD0058595B /* ClockFaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClockFaceView.swift; sourceTree = "<group>"; };
+		F6F39C982BEBED8F001C6AF9 /* clock_slider_viewUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = clock_slider_viewUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F6F39C9A2BEBED8F001C6AF9 /* clock_slider_viewUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clock_slider_viewUITests.swift; sourceTree = "<group>"; };
+		F6F39C9C2BEBED8F001C6AF9 /* clock_slider_viewUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clock_slider_viewUITestsLaunchTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +99,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F6F39C952BEBED8F001C6AF9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -95,6 +114,7 @@
 			children = (
 				F6B68453205F43930058595B /* clock_slider_view */,
 				F6B68468205F43930058595B /* clock_slider_viewTests */,
+				F6F39C992BEBED8F001C6AF9 /* clock_slider_viewUITests */,
 				F6B68452205F43930058595B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -104,6 +124,7 @@
 			children = (
 				F6B68451205F43930058595B /* clock_slider_view.app */,
 				F6B68465205F43930058595B /* clock_slider_viewTests.xctest */,
+				F6F39C982BEBED8F001C6AF9 /* clock_slider_viewUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -179,6 +200,15 @@
 			path = control;
 			sourceTree = "<group>";
 		};
+		F6F39C992BEBED8F001C6AF9 /* clock_slider_viewUITests */ = {
+			isa = PBXGroup;
+			children = (
+				F6F39C9A2BEBED8F001C6AF9 /* clock_slider_viewUITests.swift */,
+				F6F39C9C2BEBED8F001C6AF9 /* clock_slider_viewUITestsLaunchTests.swift */,
+			);
+			path = clock_slider_viewUITests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -217,13 +247,31 @@
 			productReference = F6B68465205F43930058595B /* clock_slider_viewTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		F6F39C972BEBED8F001C6AF9 /* clock_slider_viewUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F6F39CA22BEBED8F001C6AF9 /* Build configuration list for PBXNativeTarget "clock_slider_viewUITests" */;
+			buildPhases = (
+				F6F39C942BEBED8F001C6AF9 /* Sources */,
+				F6F39C952BEBED8F001C6AF9 /* Frameworks */,
+				F6F39C962BEBED8F001C6AF9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F6F39C9F2BEBED8F001C6AF9 /* PBXTargetDependency */,
+			);
+			name = clock_slider_viewUITests;
+			productName = clock_slider_viewUITests;
+			productReference = F6F39C982BEBED8F001C6AF9 /* clock_slider_viewUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		F6B68449205F43930058595B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0920;
+				LastSwiftUpdateCheck = 1530;
 				LastUpgradeCheck = 1150;
 				ORGANIZATIONNAME = "Cross Swim Training, Inc";
 				TargetAttributes = {
@@ -235,6 +283,11 @@
 					F6B68464205F43930058595B = {
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 1150;
+						ProvisioningStyle = Automatic;
+						TestTargetID = F6B68450205F43930058595B;
+					};
+					F6F39C972BEBED8F001C6AF9 = {
+						CreatedOnToolsVersion = 15.3;
 						ProvisioningStyle = Automatic;
 						TestTargetID = F6B68450205F43930058595B;
 					};
@@ -255,6 +308,7 @@
 			targets = (
 				F6B68450205F43930058595B /* clock_slider_view */,
 				F6B68464205F43930058595B /* clock_slider_viewTests */,
+				F6F39C972BEBED8F001C6AF9 /* clock_slider_viewUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -271,6 +325,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		F6B68463205F43930058595B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F6F39C962BEBED8F001C6AF9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -314,6 +375,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F6F39C942BEBED8F001C6AF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F6F39C9B2BEBED8F001C6AF9 /* clock_slider_viewUITests.swift in Sources */,
+				F6F39C9D2BEBED8F001C6AF9 /* clock_slider_viewUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -321,6 +391,11 @@
 			isa = PBXTargetDependency;
 			target = F6B68450205F43930058595B /* clock_slider_view */;
 			targetProxy = F6B68466205F43930058595B /* PBXContainerItemProxy */;
+		};
+		F6F39C9F2BEBED8F001C6AF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F6B68450205F43930058595B /* clock_slider_view */;
+			targetProxy = F6F39C9E2BEBED8F001C6AF9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -519,6 +594,60 @@
 			};
 			name = Release;
 		};
+		F6F39CA02BEBED8F001C6AF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = ZT7E887Q9H;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "ca.jasoncross.clock-slider-viewUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = clock_slider_view;
+			};
+			name = Debug;
+		};
+		F6F39CA12BEBED8F001C6AF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = ZT7E887Q9H;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "ca.jasoncross.clock-slider-viewUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = clock_slider_view;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -545,6 +674,15 @@
 			buildConfigurations = (
 				F6B68472205F43930058595B /* Debug */,
 				F6B68473205F43930058595B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F6F39CA22BEBED8F001C6AF9 /* Build configuration list for PBXNativeTarget "clock_slider_viewUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F6F39CA02BEBED8F001C6AF9 /* Debug */,
+				F6F39CA12BEBED8F001C6AF9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -154,6 +154,8 @@ class ClockFaceView: UIView {
                 let angleCorrection = CGFloat(-1.0 * CGFloat(hour) * rotationEachHour)
                 let textBaseCenterPoint = CGPoint(x: hourMarkProximalPoint.x,
                                                   y: hourMarkProximalPoint.y + (textSize.height / 2) + self.clockFacePadding)
+                print("hour mark: \(hourMarkProximalPoint), textBaseCenterPoint: \(textBaseCenterPoint)")
+                
                 textString.drawWithBasePoint(textBaseCenterPoint,
                                              angle:angleCorrection,
                                              fontAttributes: self.fontAttributes,
