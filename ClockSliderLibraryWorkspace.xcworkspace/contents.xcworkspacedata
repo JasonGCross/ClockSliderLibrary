@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:ClockSliderLibraryClientMac/ClockSliderLibraryClientMac.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:ClockSliderLibraryClientiOS/ClockSliderLibraryClientiOS.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:ClockSliderLibrary">
+   </FileRef>
+   <FileRef
+      location = "group:ClockSliderLibrary.xctestplan">
+   </FileRef>
+</Workspace>

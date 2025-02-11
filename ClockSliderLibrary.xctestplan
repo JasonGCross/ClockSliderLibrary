@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "7FBA7681-FD14-43EB-8F92-72A78E839788",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "ClockSliderLibraryTests",
+        "name" : "ClockSliderLibraryTests"
+      }
+    }
+  ],
+  "version" : 1
+}
