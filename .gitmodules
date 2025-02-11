@@ -1,9 +1,0 @@
-[submodule "ClockSliderLibraryClientiOS"]
-	path = ClockSliderLibraryClientiOS
-	url = https://github.com/JasonGCross/ClockSliderLibraryClientiOS.git
-[submodule "ClockSliderLibraryClientMac"]
-	path = ClockSliderLibraryClientMac
-	url = https://github.com/JasonGCross/ClockSliderLibraryClientMac.git
-[submodule "ClockSliderLibrary"]
-	path = ClockSliderLibrary
-	url = https://github.com/JasonGCross/ClockSliderLibrary.git
