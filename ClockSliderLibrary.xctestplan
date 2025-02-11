@@ -12,13 +12,7 @@
 
   },
   "testTargets" : [
-    {
-      "target" : {
-        "containerPath" : "container:",
-        "identifier" : "ClockSliderLibraryTests",
-        "name" : "ClockSliderLibraryTests"
-      }
-    }
+
   ],
   "version" : 1
 }
