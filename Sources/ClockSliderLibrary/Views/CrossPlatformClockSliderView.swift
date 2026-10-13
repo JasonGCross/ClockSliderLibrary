@@ -72,6 +72,9 @@ public class CrossPlatformClockSliderView {
         //
         // 1. the start end cap
         //
+        // mostly handled when the parent control draws the start thumbnail view
+        // but need to fill in one additional pixel which is otherwise white / blank / missing
+        // the few lines below fix this little sliver
         let drawableStartAngle = CGFloat(0)
         context.beginPath()
         context.addArc(center: rect.origin,
@@ -150,13 +153,13 @@ public class CrossPlatformClockSliderView {
         // 3. the finish end cap
         //
         
-        // handled by the control itself
+        // handled when the parent control draws the end thumbnail view
         
         //
         // images for thumb sliders
         //
         
-        // handled by the control itself
+        // handled by the control draws the slider view (the empty track)
         
     }
 }

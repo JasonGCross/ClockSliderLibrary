@@ -117,11 +117,13 @@ public class TimeRangeSliderControlViewModel: NSObject {
         let sliderEndAngle = clockSliderViewModel.sliderEndAngle
         // 4.
         // simply tracks touches and highlighted state
-        self.startKnobViewModel = ThumbnailViewModel(drawableEndAngle: sliderStartAngle)
+        self.startKnobViewModel = ThumbnailViewModel(drawableEndAngle: sliderStartAngle,
+                                                     isStartThumb: true)
         
         // 5.
         // simply tracks touches and highlighted state
-        self.finishKnobViewModel = ThumbnailViewModel(drawableEndAngle: sliderEndAngle)
+        self.finishKnobViewModel = ThumbnailViewModel(drawableEndAngle: sliderEndAngle,
+                                                      isStartThumb: false)
         
         let diameter = CGFloat(fminf(Float(frame.size.width),
                                      Float(frame.size.height)))
@@ -223,7 +225,7 @@ public class TimeRangeSliderControlViewModel: NSObject {
         
         if(self.startKnobViewModel.isHighlighted) {
             if (newTimeSpan > self.timeSliceViewModel.maxAllowedMinutes) {
-                let currentEndThumb = self.clockSliderViewModel.thumbnailCenterPoint(self.getFinishTime().totalMinutes)
+                let currentEndThumb = self.clockSliderViewModel.thumbnailCenterPointFor(self.getFinishTime().totalMinutes)
                 let maximumMinutes = self.maximumAllowedStartMinutesStartingFromFinishThumbCenter(currentEndThumb)
                 self.timeSliceViewModel.startTime = TimeOfDayModel.timeModelFromMinutes(maximumMinutes)
             }
@@ -233,7 +235,7 @@ public class TimeRangeSliderControlViewModel: NSObject {
         }
         else if (self.finishKnobViewModel.isHighlighted) {
             if (newTimeSpan > self.timeSliceViewModel.maxAllowedMinutes) {
-                let currentStartThumb = self.clockSliderViewModel.thumbnailCenterPoint(self.getStartTime().totalMinutes)
+                let currentStartThumb = self.clockSliderViewModel.thumbnailCenterPointFor(self.getStartTime().totalMinutes)
                 let maximumMinutes = self.maximumAllowedFinishMinutesStartingFromStartThumbCenter(currentStartThumb)
                 self.timeSliceViewModel.finishTime = TimeOfDayModel.timeModelFromMinutes(maximumMinutes)
             }
@@ -373,7 +375,7 @@ public class TimeRangeSliderControlViewModel: NSObject {
         // angle = asin(x / radius)
         
         // the above geometry only works when we are between 0 and 3 o'clock
-        let quadrant: ClockQuadrant = ClockQuadrant.mapPointToQuadrant(cartesianCoordinateCirclePoint)
+        let quadrant: ClockQuadrantModel = ClockQuadrantModel.mapPointToQuadrant(cartesianCoordinateCirclePoint)
         
         switch (quadrant) {
         case .first:
@@ -442,11 +444,34 @@ public class TimeRangeSliderControlViewModel: NSObject {
     
     public func originForThumbnail(_ minutes: Int) -> CGPoint {
         var value = CGPoint.zero
-        let centerPoint = self.clockSliderViewModel.thumbnailCenterPoint(minutes)
+        let centerPoint = self.clockSliderViewModel.thumbnailCenterPointFor(minutes)
         let originPoint = CGPoint(x:centerPoint.x - self.clockSliderViewModel.halfSliderTrackWidth,
                                   y:centerPoint.y - self.clockSliderViewModel.halfSliderTrackWidth)
         value = originPoint
         return value
+    }
+    
+    fileprivate func adjustModelsBasedOnHighlightedKnob(_ highlightedKnob: HighlightedKnob, _ angle: CGFloat, _ rawMinutes: CGFloat) {
+        //5. Time of Day Time: e.g. 1:30pm, or 13:30 = 810 minutes
+        //For a 24-hour clock, the time of day is always the same as the clock face time.
+        //But for a 12-hour clock, the time of day is only the same as the clock face time before noon.
+        //After noon, the actual time of day is 12 hours greater.
+        //For example, 1:30 on the clock is 13:30 of actual time.
+        //In order to perform this calculation, more than just the Clock Face Time and clock type are
+        //needed. The old time of day is also needed as it must be determined if a change from am to pm
+        //is required or not.
+        switch highlightedKnob {
+        case .start:
+            self.clockSliderViewModel.sliderStartAngle = angle
+            self.timeSliceViewModel.changeStartTimeOfDayUsingClockFaceTime(rawMinutes)
+            self.startKnobViewModel.drawableEndAngle = angle
+        case .finish:
+            self.clockSliderViewModel.sliderEndAngle = angle
+            self.timeSliceViewModel.changeFinishTimeOfDayUsingClockFaceTime(rawMinutes)
+            self.finishKnobViewModel.drawableEndAngle = angle
+        case .neitherThumbKnob:
+            break
+        }
     }
     
     internal func adjustStartAndEndTimesDuringTracking(location: CGPoint, highlightedKnob: HighlightedKnob) {
@@ -474,26 +499,8 @@ public class TimeRangeSliderControlViewModel: NSObject {
         //Both AM and PM will show the same clock face time.
         let rawMinutes = self.minutesForClockFaceAngle(angle)
         
-        //5. Time of Day Time: e.g. 1:30pm, or 13:30 = 810 minutes
-        //For a 24-hour clock, the time of day is always the same as the clock face time.
-        //But for a 12-hour clock, the time of day is only the same as the clock face time before noon.
-        //After noon, the actual time of day is 12 hours greater.
-        //For example, 1:30 on the clock is 13:30 of actual time.
-        //In order to perform this calculation, more than just the Clock Face Time and clock type are
-        //needed. The old time of day is also needed as it must be determined if a change from am to pm
-        //is required or not.
-        switch highlightedKnob {
-        case .start:
-            self.clockSliderViewModel.sliderStartAngle = angle
-            self.timeSliceViewModel.changeStartTimeOfDayUsingClockFaceTime(rawMinutes)
-            self.startKnobViewModel.drawableEndAngle = angle
-        case .finish:
-            self.clockSliderViewModel.sliderEndAngle = angle
-            self.timeSliceViewModel.changeFinishTimeOfDayUsingClockFaceTime(rawMinutes)
-            self.finishKnobViewModel.drawableEndAngle = angle
-        case .neitherThumbKnob:
-            break
-        }
+        //5. Update the models
+        adjustModelsBasedOnHighlightedKnob(highlightedKnob, angle, rawMinutes)
     }
 }
 

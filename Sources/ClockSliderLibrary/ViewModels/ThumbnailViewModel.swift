@@ -21,9 +21,12 @@ public class ThumbnailViewModel: NSObject {
     public var viewDelegate: CocoaCocoaTouchViewInterface?
     public var isHighlighted: Bool = false
     internal var drawableEndAngle: CGFloat = 0
+    public var isStartThumb: Bool = false
     
-    public init(drawableEndAngle: CGFloat) {
+    public init(drawableEndAngle: CGFloat,
+                isStartThumb: Bool) {
         self.drawableEndAngle = drawableEndAngle
+        self.isStartThumb = isStartThumb
     }
     
     func touchPointIsInsideThisView(_ touchPoint: CGPoint) -> Bool {

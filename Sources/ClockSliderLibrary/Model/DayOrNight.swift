@@ -8,6 +8,7 @@
 
 import Foundation
 
+// Work-around for having to parse 24-hour clocks or use military or european time.
 public enum DayOrNight: String {
     case am = "AM"
     case pm = "PM"

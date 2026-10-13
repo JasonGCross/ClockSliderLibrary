@@ -169,8 +169,8 @@ public class ClockSliderViewModel: NSObject {
                                                  alpha: &secondDayEndAlpha)
     }
     
-    func thumbnailCenterPoint(_ minutes: Int) -> CGPoint {
-        var value = CGPoint.zero
+    func thumbnailCenterPointFor(_ minutes: Int) -> CGPoint {
+        var centerPoint = CGPoint.zero
         
         //                      opposite
         //                    |---------
@@ -212,9 +212,9 @@ public class ClockSliderViewModel: NSObject {
         // And the Y-axis runs between 6 o'clock and 12 o'clock, but running up is negative.
         // Also remember that our drawRect uses a translated coordinate system;
         // without translation, the origin would be in the upper left corder
-        value = CGPoint(x: opposite + clockRadius,
+        centerPoint = CGPoint(x: opposite + clockRadius,
                         y: -adjacent + clockRadius)
-        return value
+        return centerPoint
     }
     
     /**
@@ -254,7 +254,7 @@ public class ClockSliderViewModel: NSObject {
     
     public func originForThumbnail(_ minutes: Int) -> CGPoint {
         var value = CGPoint.zero
-        let centerPoint = self.thumbnailCenterPoint(minutes)
+        let centerPoint = self.thumbnailCenterPointFor(minutes)
         let originPoint = CGPoint(x:centerPoint.x - halfSliderTrackWidth,
                                   y:centerPoint.y - halfSliderTrackWidth)
         value = originPoint

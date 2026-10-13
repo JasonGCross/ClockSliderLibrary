@@ -242,8 +242,8 @@ struct SliderControlViewModelTests {
     }
     
     @Test(arguments:[
-        (hour: 0, min: 0, px: 150.0, py: 75.0, resultHour: 2, resultMin: 7),
-        (hour: 5, min: 59, px: 145.0, py: 200.0, resultHour: 5, resultMin: 12)
+        (hour: 0, min: 0, px: 150.0, py: 75.0, resultHour: 2, resultMin: 6),
+        (hour: 5, min: 59, px: 145.0, py: 200.0, resultHour: 5, resultMin: 11)
     ]) func validateFullRoundOfTouchToTimeStart(
         tuple: (hour: Int, min: Int, px: CGFloat, py: CGFloat, resultHour: Int, resultMin: Int)
     ) {
@@ -275,8 +275,8 @@ struct SliderControlViewModelTests {
     }
     
     @Test(arguments:[
-        (hour: 0, min: 0, px: 150.0, py: 75.0, resultHour: 2, resultMin: 7),
-        (hour: 5, min: 59, px: 145.0, py: 200.0, resultHour: 5, resultMin: 12)
+        (hour: 0, min: 0, px: 150.0, py: 75.0, resultHour: 2, resultMin: 6),
+        (hour: 5, min: 59, px: 145.0, py: 200.0, resultHour: 5, resultMin: 11)
     ]) func validateFullRoundOfTouchToTimeFinish(
         tuple: (hour: Int, min: Int, px: CGFloat, py: CGFloat, resultHour: Int, resultMin: Int)
     ) {
