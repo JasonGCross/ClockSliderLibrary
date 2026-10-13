@@ -14,6 +14,10 @@ class ViewController: UIViewController {
     var timeRangeSliderControl: TimeRangeSliderControl!
     let ringWidth: CGFloat = 44.0
     
+    @IBOutlet var startTimeLabel: UILabel!
+    @IBOutlet var endTimeLabel: UILabel!
+    @IBOutlet var durationLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -52,6 +56,8 @@ class ViewController: UIViewController {
         timeRangeSliderControl.finishThumbColor = finishColor
         
         timeRangeSliderControl.isUserInteractionEnabled = true
+        
+        timeRangeSliderControl.addTarget(self, action: #selector(sliderValueChanged(sender:)), for: UIControl.Event.allTouchEvents)
     }
 
     //MARK:- Actions
