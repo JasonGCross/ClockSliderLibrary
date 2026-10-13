@@ -14,10 +14,6 @@ class ViewController: UIViewController {
     var timeRangeSliderControl: TimeRangeSliderControl!
     let ringWidth: CGFloat = 44.0
     
-    @IBOutlet var startTimeLabel: UILabel!
-    @IBOutlet var endTimeLabel: UILabel!
-    @IBOutlet var durationLabel: UILabel!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -62,24 +58,7 @@ class ViewController: UIViewController {
 
     //MARK:- Actions
     @objc func sliderValueChanged(sender: TimeRangeSliderControl) {
-        guard let control = sender.underlyingTimeRangeSliderControl else {
-            return
-        }
-        
-        let startTime = control.getStartTime()
-        let finishTime = control.getFinishTime()
-        let durationInMinutes = finishTime.totalMinutes - startTime.totalMinutes
-        let durationModel = TimeOfDayModel.timeModelFromMinutes(durationInMinutes)
-        
-        let startTimeDate = startTime.getFoundationDateWithOnlyHoursAndMinutes()
-        let finishTimeDate = finishTime.getFoundationDateWithOnlyHoursAndMinutes()
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.setLocalizedDateFormatFromTemplate("HH:mm")
-        
-        self.startTimeLabel.text = dateFormatter.string(from: startTimeDate)
-        self.endTimeLabel.text = dateFormatter.string(from: finishTimeDate)
-        self.durationLabel.text = durationModel.debugDescription
+
     }
 }
 
