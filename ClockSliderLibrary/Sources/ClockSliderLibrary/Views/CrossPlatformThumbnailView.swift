@@ -57,7 +57,7 @@ public class CrossPlatformThumbnailView {
                            radius: halfSliderTrackWidth,
                            startAngle: self.viewModel.drawableEndAngle - CGFloat((Double.pi / 2.0)),
                            endAngle: self.viewModel.drawableEndAngle + CGFloat((Double.pi / 2.0)),
-                           clockwise: false
+                           clockwise: self.viewModel.isStartThumb
             )
             context.closePath()
             context.fillPath()

@@ -40,3 +40,11 @@ class ClockFaceView: UIView {
         self.underlyingClockFaceView.draw(rect, context: ctx)
     }
 }
+
+#Preview {
+    let frame = CGRect(x: 0, y: 0, width: 200, height: 200)
+    let ringWidth: CGFloat = 200
+    let vm = ClockFaceViewModel()
+    let crossPlatformClockFace: CrossPlatformClockFaceView = CrossPlatformClockFaceView(_frame: CGRect(x: 0, y: 0, width: 100, height: 100), _ringWidth: ringWidth, _viewModel: vm)
+    ClockFaceView(_frame: frame, _ringWidth: ringWidth, _underlyingClockFaceView: crossPlatformClockFace)
+}
