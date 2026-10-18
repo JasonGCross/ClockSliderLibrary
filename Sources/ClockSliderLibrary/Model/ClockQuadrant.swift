@@ -15,32 +15,32 @@ import Foundation
  The third quadrant is negative for both x and y.
  The fourth quadrant is negative x, but positive y.
  */
-public enum ClockQuadrantModel: String {
+public enum ClockQuadrant: String {
     case first, second, third, fourth
 }
 
-extension ClockQuadrantModel {
+extension ClockQuadrant {
     /**
      Takes a cartesian coordinate system point and maps it to one of four quadrants.
      
      - parameter point: the point to be mapped -- origin must be at (0, 0)
      - returns: the quadrant that this point lies within.
      */
-    static func mapPointToQuadrant(_ point: CGPoint) -> ClockQuadrantModel {
+    static func mapPointToQuadrant(_ point: CGPoint) -> ClockQuadrant {
         if (point.x >= 0) {
             if  (point.y >= 0) {
-                return ClockQuadrantModel.first
+                return ClockQuadrant.first
             }
             else {
-                return ClockQuadrantModel.second
+                return ClockQuadrant.second
             }
         }
         else {
             if (point.y >= 0) {
-                return ClockQuadrantModel.fourth
+                return ClockQuadrant.fourth
             }
         }
-        return ClockQuadrantModel.third
+        return ClockQuadrant.third
     }
     
     /**
@@ -52,7 +52,7 @@ extension ClockQuadrantModel {
      - parameter clockType: the type of clock -- either 12-hour or 24 hour
      - returns: the quadrant that the hour hand lies within,
      */
-    static func mapTimeToQuandrant(_ time: TimeOfDayModel, clockType: ClockType) -> ClockQuadrantModel {
+    static func mapTimeToQuandrant(_ time: TimeOfDayModel, clockType: ClockType) -> ClockQuadrant {
         
         let oneRotation = clockType.rawValue * 60
         let halfRotation = clockType.rawValue * 30
@@ -67,16 +67,16 @@ extension ClockQuadrantModel {
         // due to the constructor of TimeOfDayModel, negative minutes are never possible
         
         if (safeMinutes >= 0) && (safeMinutes < quarterRotation) {
-            return ClockQuadrantModel.first
+            return ClockQuadrant.first
         }
         else if (safeMinutes >= quarterRotation) && (safeMinutes < halfRotation) {
-            return ClockQuadrantModel.second
+            return ClockQuadrant.second
         }
         else if (safeMinutes >= halfRotation) && (safeMinutes < threeQuarterRotation) {
-            return ClockQuadrantModel.third
+            return ClockQuadrant.third
         }
         else {
-            return ClockQuadrantModel.fourth
+            return ClockQuadrant.fourth
         }
     }
 }
