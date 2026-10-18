@@ -375,7 +375,7 @@ public class TimeRangeSliderControlViewModel: NSObject {
         // angle = asin(x / radius)
         
         // the above geometry only works when we are between 0 and 3 o'clock
-        let quadrant: ClockQuadrantModel = ClockQuadrantModel.mapPointToQuadrant(cartesianCoordinateCirclePoint)
+        let quadrant: ClockQuadrant = ClockQuadrant.mapPointToQuadrant(cartesianCoordinateCirclePoint)
         
         switch (quadrant) {
         case .first:
