@@ -7,6 +7,13 @@
 
 import QuartzCore
 
+/**
+ "Master" view model which contains other sub-view models.
+ Recall that the `TimeRangeSlider` is a container for
+ - the clock face
+ - the slider around the clock face
+ 
+ */
 public class TimeRangeSliderControlViewModel: NSObject {
     
     // MARK:- other view models
@@ -21,6 +28,7 @@ public class TimeRangeSliderControlViewModel: NSObject {
     internal var previousTouchPoint: CGPoint = CGPoint.zero
     internal var clockRadius: CGFloat
     internal var radiusClockCenterToSliderTrackCenter: CGFloat
+    
     /// minimum distance allowed to the center of the circle before drag events are ignored
     internal var dragTolerance: CGFloat = 30
     internal var startLockedToMidnight: Bool = false
@@ -137,7 +145,7 @@ public class TimeRangeSliderControlViewModel: NSObject {
         super.init()
     }
     
-    //MARK:- convenience getters
+    //MARK: - convenience getters
     public func getDrawableStartAngle() -> CGFloat {
         return self.clockSliderViewModel.sliderStartAngle
     }
@@ -154,7 +162,7 @@ public class TimeRangeSliderControlViewModel: NSObject {
         return self.timeSliceViewModel.finishTime
     }
     
-    //MARK:- touch handling
+    //MARK: - touch handling
     public func beginTracking(at location: CGPoint) {
         self.previousTouchPoint = location
         

@@ -9,6 +9,9 @@ import Foundation
 import CoreGraphics
 import CoreText
 
+/**
+ A ring which goes around the outside of a circle (a clock face), and responds to touch events.
+ */
 public class CrossPlatformTimeRangeSliderControl {
     
     //
@@ -251,7 +254,7 @@ public class CrossPlatformTimeRangeSliderControl {
         }
     }
     
-    //MARK:- initialization
+    //MARK: - initialization
     public init(_frame: CGRect,
                 _ringWidth: CGFloat,
                 _clockType: ClockType,
@@ -326,3 +329,4 @@ public class CrossPlatformTimeRangeSliderControl {
         return self.viewModel.clockSliderViewModel.sliderStartAngle
     }
 }
+

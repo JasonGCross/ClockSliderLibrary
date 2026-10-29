@@ -108,7 +108,7 @@ public class TimeSliceViewModel: NSObject {
      is required or not.
      */
     
-    //MARK:- properties
+    //MARK: - properties
     // these 2 properties replace having 4 different subclasses
     var startTimeIsFixedToZero: Bool = false
     var clockType: ClockType = ClockType.twelveHourClock
@@ -159,7 +159,7 @@ public class TimeSliceViewModel: NSObject {
     
     var maxAllowedMinutes: Int { self.clockType.rawValue * 60 }
     
-    //MARK:- constructor
+    //MARK: - constructor
     init(startTimeIsFixedToZero: Bool = false,
          clockType: ClockType = ClockType.twelveHourClock,
          startTime: TimeOfDayModel = TimeOfDayModel(),
@@ -175,7 +175,7 @@ public class TimeSliceViewModel: NSObject {
         self.maximumTimeDuration = maximumTimeDuration
     }
     
-    //MARK:- functions
+    //MARK: - functions
     func changeTimeOfDayUsingClockFaceTime(oldTimeOfDay: TimeOfDayModel, clockFaceTime newMinutes: CGFloat) -> TimeOfDayModel {
         guard self.clockType != ClockType.twentyFourHourClock else {
             let newValue = TimeOfDayModel.timeModelFromMinutes(Int(newMinutes.rounded(FloatingPointRoundingRule.down)))
