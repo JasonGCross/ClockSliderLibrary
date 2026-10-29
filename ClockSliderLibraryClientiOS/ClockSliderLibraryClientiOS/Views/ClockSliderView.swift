@@ -11,7 +11,7 @@ import ClockSliderLibrary
 class ClockSliderView: UIView {
     var underlyingClockSliderView: CrossPlatformClockSliderView
     
-    //MARK:- Initialization
+    //MARK: - Initialization
     override init(frame: CGRect) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -34,12 +34,12 @@ class ClockSliderView: UIView {
         self.backgroundColor = .clear
     }
     
-    //MARK:- Helpers
+    //MARK: - Helpers
     func originForThumbnail(minutes: Int) -> CGPoint {
         return self.underlyingClockSliderView.viewModel.originForThumbnail(minutes)
     }
     
-    //MARK:- Drawing
+    //MARK: - Drawing
     override func draw(_ rect: CGRect) {
         super.draw(rect)
                 

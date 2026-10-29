@@ -12,6 +12,8 @@ class ViewController: NSViewController {
     
     @IBOutlet weak var customViewContainer: NSView!
     var timeRangeSliderControl: TimeRangeSliderControl!
+    
+    // the width of the ring outside the clock face, in pixels
     let ringWidth: CGFloat = 44.0
 
     override func viewDidLoad() {

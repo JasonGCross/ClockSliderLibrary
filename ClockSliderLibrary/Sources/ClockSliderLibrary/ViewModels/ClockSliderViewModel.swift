@@ -72,7 +72,7 @@ public class ClockSliderViewModel: NSObject {
     internal let angleEquivalentToOnePixel: CGFloat = CGFloat(Double.pi / 360.0)
     internal let thresholdForAdjustingArcRaduis = 2
     
-    //MARK:- initializers
+    //MARK: - initializers
     private init(_frame: CGRect,
          _clockType: ClockType,
          _ringWidth: CGFloat,
@@ -136,7 +136,7 @@ public class ClockSliderViewModel: NSObject {
         self.breakStartAndFinishColorsIntoComponents()
     }
     
-    //MARK:- helper functions
+    //MARK: - helper functions
     func setClock(startAngle: CGFloat,
                   finishAngle: CGFloat,
                   clockDuration: Int,
@@ -201,7 +201,7 @@ public class ClockSliderViewModel: NSObject {
         
         // Now use geometry to solve for the opposite length
         // using this formula: sin(theta) = oposite / hypoteneuse
-        // which gives: opposite = sin(theta) * hypoteneuse
+        // which gives: opposite = sin(theta /* in radians */ ) * hypoteneuse
         opposite = sin(angle) * hypoteneuse
         
         // likewise the adjacent may be found

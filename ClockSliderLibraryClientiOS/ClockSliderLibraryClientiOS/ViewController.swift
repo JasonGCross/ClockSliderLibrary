@@ -56,7 +56,7 @@ class ViewController: UIViewController {
         timeRangeSliderControl.addTarget(self, action: #selector(sliderValueChanged(sender:)), for: UIControl.Event.allTouchEvents)
     }
 
-    //MARK:- Actions
+    //MARK: - Actions
     @objc func sliderValueChanged(sender: TimeRangeSliderControl) {
 
     }

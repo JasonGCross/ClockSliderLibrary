@@ -43,8 +43,8 @@ class ClockFaceView: UIView {
 
 #Preview {
     let frame = CGRect(x: 0, y: 0, width: 200, height: 200)
-    let ringWidth: CGFloat = 200
+    let ringWidth: CGFloat = 80
     let vm = ClockFaceViewModel()
-    let crossPlatformClockFace: CrossPlatformClockFaceView = CrossPlatformClockFaceView(_frame: CGRect(x: 0, y: 0, width: 100, height: 100), _ringWidth: ringWidth, _viewModel: vm)
+    let crossPlatformClockFace: CrossPlatformClockFaceView = CrossPlatformClockFaceView(_frame: CGRect(x: 0, y: 0, width: 280, height: 280), _ringWidth: ringWidth, _viewModel: vm)
     ClockFaceView(_frame: frame, _ringWidth: ringWidth, _underlyingClockFaceView: crossPlatformClockFace)
 }

@@ -12,7 +12,7 @@ import ClockSliderLibrary
 class ClockSliderView: NSView {
     var underlyingClockSliderView: CrossPlatformClockSliderView
     
-    //MARK:- Initialization
+    //MARK: - Initialization
     override init(frame: CGRect) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -34,7 +34,7 @@ class ClockSliderView: NSView {
         super.init(frame: _frame)
     }
     
-    //MARK:- Drawing
+    //MARK: - Drawing
     override var isFlipped: Bool {
         return true
     }

@@ -11,13 +11,13 @@ import ClockSliderLibrary
 class TimeRangeSliderControl: NSControl {
     var underlyingTimeRangeSliderControl: CrossPlatformTimeRangeSliderControl?
     
-    //MARK:- subviews
+    //MARK: - subviews
     var clockFaceView : ClockFaceView?
     var clockSliderView: ClockSliderView?
     var startKnobView: ThumbnailView?
     var finishKnobView: ThumbnailView?
     
-    //MARK:- properties
+    //MARK: - properties
     
     // Attempt to keep only things that directly deal with view layout
     // in this file (e.g. colors, widths, sizes).
@@ -257,7 +257,7 @@ class TimeRangeSliderControl: NSControl {
         }
     }
     
-    //MARK:- initialization
+    //MARK: - initialization
     override init(frame: CGRect) {
         fatalError("init(coder:) has not been implemented")
     }

@@ -12,7 +12,7 @@ import ClockSliderLibrary
 class ThumbnailView: NSView {
     var underlyingThumbnailView: CrossPlatformThumbnailView
     
-    //MARK:- initialization
+    //MARK: - initialization
     override init(frame: CGRect) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -41,7 +41,7 @@ class ThumbnailView: NSView {
         underlyingThumbnailView.viewModel.viewDelegate = self
     }
 
-    //MARK:- Drawing
+    //MARK: - Drawing
     override var isFlipped: Bool {
         return true
     }

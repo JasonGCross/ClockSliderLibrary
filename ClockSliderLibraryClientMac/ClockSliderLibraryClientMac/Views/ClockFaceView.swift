@@ -31,7 +31,7 @@ class ClockFaceView: NSView {
         super.init(frame: _frame)
     }
     
-    //MARK:- drawing
+    //MARK: - drawing
     override var isFlipped: Bool {
         return true
     }

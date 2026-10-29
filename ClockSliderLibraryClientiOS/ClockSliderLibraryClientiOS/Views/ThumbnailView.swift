@@ -11,7 +11,7 @@ import ClockSliderLibrary
 class ThumbnailView: UIView {
     var underlyingThumbnailView: CrossPlatformThumbnailView
     
-    //MARK:- initialization
+    //MARK: - initialization
     override init(frame: CGRect) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -41,7 +41,7 @@ class ThumbnailView: UIView {
         underlyingThumbnailView.viewModel.viewDelegate = self
     }
 
-    //MARK:- Drawing    
+    //MARK: - Drawing    
     override func draw(_ rect: CGRect) {
         super.draw(rect)
                 
