@@ -98,7 +98,7 @@ public class CrossPlatformTimeRangeSliderControl {
     
     public var clockFaceTextSize: Float = 14 {
         willSet {
-            self.clockFaceView?.fontAttributes[kCTFontSizeAttribute as String] = CGFloat(newValue)
+            self.clockFaceView?.fontSize = CGFloat(newValue)
         }
     }
     
@@ -116,7 +116,7 @@ public class CrossPlatformTimeRangeSliderControl {
                                                           blue: 0.380,
                                                           alpha: 1.00) {
         willSet {
-            self.clockFaceView?.fontAttributes[kCTForegroundColorAttributeName as String] = newValue
+            self.clockFaceView?.fontColor = newValue
         }
     }
     
@@ -136,8 +136,8 @@ public class CrossPlatformTimeRangeSliderControl {
                                                      14,
                                                      nil) {
         willSet {
-            self.clockFaceView?.fontAttributes[kCTFontFamilyNameKey as String] = CTFontCopyFamilyName(newValue)
-            self.clockFaceView?.fontAttributes[kCTFontSizeAttribute as String] = CTFontGetSize(newValue)
+            self.clockFaceView?.fontFamilyNameString = CTFontCopyFamilyName(newValue) as String
+            self.clockFaceView?.fontSize = CTFontGetSize(newValue)
         }
     }
     
@@ -167,7 +167,7 @@ public class CrossPlatformTimeRangeSliderControl {
     
     public var fontFamilyNameString: String = "HelveticaNeue-Light" {
         willSet {
-            self.clockFaceView?.fontAttributes[kCTFontFamilyNameKey as String] = newValue as CFString
+            self.clockFaceView?.fontFamilyNameString = newValue
         }
     }
     
