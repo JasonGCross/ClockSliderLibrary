@@ -53,6 +53,9 @@ class ViewController: NSViewController {
         timeRangeSliderControl.firstDayGradientFinishColor = finishColor
         timeRangeSliderControl.finishThumbColor = finishColor
         
+        let clockFaceTextSize: Float = 18
+        timeRangeSliderControl.clockFaceTextSize = clockFaceTextSize
+        
         //TODO: put in a digital representation of the time as a label
     }
 

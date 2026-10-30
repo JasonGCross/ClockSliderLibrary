@@ -19,6 +19,7 @@ public class CrossPlatformClockSliderView {
 
     // MARK: - drawing
     public func draw(_ dirtyRect: CGRect, context: CGContext) {
+        return;
         let rect = dirtyRect
         
         // If you want to fill a shape with a shading, you use that shape to modify the clipping area to that shape and paint the shading. You can’t directly use a shading to stroke a shape, but you can achieve the equivalent effect in Tiger and later versions by using the function CGContextReplacePathWithStrokedPath to create a path whose interior is the area that would have been painted by stroking the current path. Clipping to the resulting path and then drawing the shading produces the same result as stroking with the shading.

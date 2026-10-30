@@ -21,30 +21,19 @@ public class CrossPlatformClockFaceView {
     // Move any underlying data or calculations to the View Model.
     
     
-    static let  defaultFontSize : CGFloat = 14
-    static let  defaultFontFamilyNameString: String = "HelveticaNeue-Light"
+    //MARK: font-related
+    var fontSize : CGFloat = 14
+    var fontFamilyNameString: String = "HelveticaNeue-Light"
+    var fontColor: CGColor = CGColor.init(red: 0.380,
+                                          green: 0.380,
+                                          blue: 0.380,
+                                          alpha: 1.00)
     
     var outerRingBackgroundColor : CGColor = CGColor.init(red: 0.8,
                                                      green: 0.8,
                                                      blue: 0.8,
                                                      alpha: 1.00)
-    var fontAttributes: Dictionary<String, Any> = {
-        var attr = Dictionary<String, Any>()
-        if let systemFont = CTFontCreateUIFontForLanguage(CTFontUIFontType.system,
-                                                          CrossPlatformClockFaceView.defaultFontSize,
-                                                          nil) {
-            attr[kCTFontFamilyNameKey as String] = CTFontCopyFamilyName(systemFont)
-        }
-        else {
-            attr[kCTFontFamilyNameKey as String] = CrossPlatformClockFaceView.defaultFontFamilyNameString
-        }
-        attr[kCTFontSizeAttribute as String] = CrossPlatformClockFaceView.defaultFontSize
-        attr[kCTForegroundColorAttributeName as String] = CGColor.init(red: 0.380,
-                                                                       green: 0.380,
-                                                                       blue: 0.380,
-                                                                       alpha: 1.00)
-        return attr
-    }()
+
     var tickMarkColor = CGColor.init(red: 0,
                                      green: 0,
                                      blue: 0,
@@ -57,32 +46,32 @@ public class CrossPlatformClockFaceView {
                                       green: 1.0,
                                       blue: 1.0,
                                       alpha: 1.0)
-    func fontColor() -> CGColor {
-        if fontAttributes.contains(where: { (key: String, value: Any) in
-                key == kCTForegroundColorAttributeName as String
-        }) {
-            let safeColor = fontAttributes[kCTForegroundColorAttributeName as String] as! CGColor
-            return safeColor
-        }
-        
-        return CGColor.init(red: 0.380, green: 0.380, blue: 0.380, alpha: 1.00)
-    }
+
     public var handsColor = CGColor.init(red: 0.5,
                                   green: 0.5,
                                   blue: 0.5,
                                   alpha: 1.00)
 
     func defaultFont() -> CTFont  {
-        var attrCopy = self.fontAttributes
-        attrCopy[kCTForegroundColorAttributeName as String] = CGColor.init(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
-        let fontDescriptor: CTFontDescriptor = CTFontDescriptorCreateWithAttributes(attrCopy as CFDictionary)
-        var font = CTFontCreateWithFontDescriptor(fontDescriptor,
-                                              CrossPlatformClockFaceView.defaultFontSize,
-                                              nil)
+        var attr = Dictionary<String, Any>()
+        if let systemFont = CTFontCreateUIFontForLanguage(CTFontUIFontType.system,
+                                                          fontSize,
+                                                          nil) {
+            attr[kCTFontFamilyNameKey as String] = CTFontCopyFamilyName(systemFont)
+        }
+        else {
+            attr[kCTFontFamilyNameKey as String] = fontFamilyNameString
+        }
+        attr[kCTFontSizeAttribute as String] = fontSize
+        attr[kCTForegroundColorAttributeName as String] = fontColor
+        let fontDescriptor: CTFontDescriptor = CTFontDescriptorCreateWithAttributes(attr as CFDictionary)
+        let font = CTFontCreateWithFontDescriptor(fontDescriptor,
+                                                  fontSize,
+                                                  nil)
         
-        font = CTFontCreateWithName("HelveticaNeue-Light" as CFString, 14, nil)
         return font
     }
+    
     var clockRadius: CGFloat
     public var ringWidth: CGFloat
     var clockFacePadding: CGFloat = 3
@@ -111,15 +100,45 @@ public class CrossPlatformClockFaceView {
                                    angle:CGFloat,
                                    context:CGContext
     ) {
-        let t:CGAffineTransform   =   CGAffineTransform(translationX: basePoint.x, y: basePoint.y)
-        let r:CGAffineTransform   =   CGAffineTransform(rotationAngle:angle)
-        let fudgeFactor:CGAffineTransform   =   CGAffineTransform(translationX: -0.5 * textSize.width, y: -clockRadius + self.ringWidth + 3 * textSize.height)
-        let s:CGAffineTransform   =   CGAffineTransform(scaleX: 1, y: -1)
+        context.saveGState()
         
-        context.concatenate(t)
-        context.concatenate(r)
-        context.concatenate(fudgeFactor)
-        context.concatenate(s)
+        /// The graphics context passed in has been rotated with each segment / movement of the hour hand,
+        /// and is sitting at the distal position of each tick mark.
+        /// The numbers (labels) need to be moved inside the proximal position of each tick mark.
+        /// The calculated position (relative to the tick mark) has been passed in as `basePoint`
+        ///
+        let distanceFromCenterTransform:CGAffineTransform = CGAffineTransform(
+            translationX: basePoint.x,
+            y: basePoint.y)
+        
+        /// The graphics context passed in has been rotated to draw the lines around the clock face.
+        /// If the angle is not reverted, the bottom of each number will face the inside of the clock,
+        /// rather than all numbers facing the bottom of the clock.
+        let rotationTransformation:CGAffineTransform = CGAffineTransform(rotationAngle:angle)
+        
+        /// Text drawing is done starting at the left hand side of the glpyh(s). This ends up squashed
+        /// against the 3 o'clock tick mark, and too far away fro the 9 o'clock tick mark.
+        /// Fix: shift each run of text by half its width, therefore "centering" it next to the tick mark.
+        let centerTextHorizontallyTransform = CGAffineTransform(
+            translationX: -0.5 * textSize.width,
+            y: 1.0)
+        
+        /// Unsure why this is needed, but without it, all the numbers are too low (sit staggered off the clock)
+        let adjustYPositionTransform:CGAffineTransform = CGAffineTransform(
+            translationX: 1,
+            y: -clockRadius + self.ringWidth + 3 * textSize.height)
+        
+        /// Because the original version of this code was written for iOS (UIKit),
+        /// it needs to be flipped upside down to work with CoreGraphics for MacOS.
+        let flipUpSideDownTransform:CGAffineTransform = CGAffineTransform(scaleX: 1, y: -1)
+        
+        
+        
+        context.concatenate(distanceFromCenterTransform)
+        context.concatenate(rotationTransformation)
+        context.concatenate(centerTextHorizontallyTransform)
+        context.concatenate(adjustYPositionTransform)
+        context.concatenate(flipUpSideDownTransform)
         
         let ctFont = defaultFont()
         let glyphs: [CGGlyph] = ClockFaceViewModel.getGlyphsFromString(text,
@@ -135,18 +154,16 @@ public class CrossPlatformClockFaceView {
             points[i] = CGPoint(x: x, y: y)
         }
         
-        let fontName = CTFontCopyName(ctFont, kCTFontFamilyNameKey) as String? ?? CrossPlatformClockFaceView.defaultFontFamilyNameString
+        let fontName = CTFontCopyName(ctFont, kCTFontFamilyNameKey) as String? ?? fontFamilyNameString
         let cgFfont = CGFont(fontName as CFString)!
         context.setFont(cgFfont)
         // this line is needed or the fault will be rendered at size 0 (regardless of the font's internal fontSize!)
-        context.setFontSize(CrossPlatformClockFaceView.defaultFontSize)
-        context.setFillColor(self.fontColor())
+        context.setFontSize(fontSize)
+        context.setFillColor(self.fontColor)
+        
         context.showGlyphs(glyphs, at: points)
-    
-        context.concatenate(s.inverted())
-        context.concatenate(fudgeFactor.inverted())
-        context.concatenate(r.inverted())
-        context.concatenate(t.inverted())
+        
+        context.restoreGState()
     }
     
     public func draw(_ dirtyRect: CGRect, context: CGContext) {
@@ -249,8 +266,8 @@ public class CrossPlatformClockFaceView {
             
             var dictionaryAttributes = Dictionary<String, Any>()
             dictionaryAttributes[kCTForegroundColorAttributeName as String] = self.tickMarkColor
-            dictionaryAttributes[kCTFontFamilyNameKey as String] = CrossPlatformClockFaceView.defaultFontFamilyNameString
-            dictionaryAttributes[kCTFontSizeAttribute as String] = CrossPlatformClockFaceView.defaultFontSize
+            dictionaryAttributes[kCTFontFamilyNameKey as String] = fontFamilyNameString
+            dictionaryAttributes[kCTFontSizeAttribute as String] = fontSize
             let attributedString = CFAttributedStringCreate(kCFAllocatorDefault, textString as CFString, dictionaryAttributes as CFDictionary)!
             let line = CTLineCreateWithAttributedString(attributedString)
             let textPosition = CTLineGetImageBounds(line, context)
@@ -259,6 +276,7 @@ public class CrossPlatformClockFaceView {
             let angleCorrection = CGFloat(-1.0 * CGFloat(hour) * viewModel.rotationEachHour)
             let textBaseCenterPoint = CGPoint(x: hourMarkProximalPoint.x,
                                               y: hourMarkProximalPoint.y + (1 * textSize.height) + self.clockFacePadding)
+            
             self.drawWithBasePoint(
                 text: textString,
                 textSize: textSize,
