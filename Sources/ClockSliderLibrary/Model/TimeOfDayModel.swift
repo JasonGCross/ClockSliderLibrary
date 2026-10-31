@@ -35,6 +35,10 @@ extension TimeOfDayModel {
         hour * 60 + minute
     }
     
+    public var hoursOnly: Int {
+        hour
+    }
+    
     public var amORpm: DayOrNight {
         if hour >= 12 {
             return .pm
