@@ -76,9 +76,9 @@ public class CrossPlatformClockFaceView {
     public var ringWidth: CGFloat
     var clockFacePadding: CGFloat = 3
     var minutesBetweenMinorTickMarks: Int = 15
-    let hourMarkLineLength: CGFloat = 5
-    let hourMarkLineWidth : CGFloat = 2
-    let minuteMarkLineWidth: CGFloat = 1
+    var hourMarkLineLength: CGFloat = 5
+    var hourMarkLineWidth : CGFloat = 2
+    var minuteMarkLineWidth: CGFloat = 1
     var rotationEachMinorTick : CGFloat = CGFloat(Double.pi / 24)
     let handsWidth = 2.0
     let minuteHandRatio = 0.99
@@ -94,11 +94,13 @@ public class CrossPlatformClockFaceView {
         self.viewModel = _viewModel
     }
     
-    private func drawWithBasePoint(text: String,
-                                   textSize: CGSize,
-                                   basePoint:CGPoint,
-                                   angle:CGFloat,
-                                   context:CGContext
+    private func drawHourLabel(ctLine: CTLine,
+                               lineOffset: CGFloat,
+                               text: String,
+                               textSize: CGSize,
+                               basePoint:CGPoint,
+                               angle:CGFloat,
+                               context:CGContext
     ) {
         context.saveGState()
         
@@ -119,25 +121,35 @@ public class CrossPlatformClockFaceView {
         /// Text drawing is done starting at the left hand side of the glpyh(s). This ends up squashed
         /// against the 3 o'clock tick mark, and too far away fro the 9 o'clock tick mark.
         /// Fix: shift each run of text by half its width, therefore "centering" it next to the tick mark.
-        let centerTextHorizontallyTransform = CGAffineTransform(
+        /// They also end up vertically too close to 6 o'clock and too far from 12 o'clock.
+        /// Fix: shift each run of text by half its height.
+        let centerTextTransform = CGAffineTransform(
             translationX: -0.5 * textSize.width,
-            y: 1.0)
+            y: -0.5 * textSize.height)
         
         /// Unsure why this is needed, but without it, all the numbers are too low (sit staggered off the clock)
+        /// Note: this transformation is required only when using context.showGlyphs, and not CCTDrawLine
         let adjustYPositionTransform:CGAffineTransform = CGAffineTransform(
             translationX: 1,
             y: -clockRadius + self.ringWidth + 3 * textSize.height)
+        
+        /// The use of CTLine (which is created by a CTTypesetter) has un-expected behaviour.
+        /// Each line is appened to the old line, resulting in drift from the expected origin.
+        /// Fix: find out the drift and subtract it.
+        /// Note: this transformation is required only when using CTDrawLine, and not context.showGlyphs
+//        let lineOffsetTransform:CGAffineTransform = CGAffineTransform(
+//            translationX: -1 * lineOffset,
+//            y: 1)
         
         /// Because the original version of this code was written for iOS (UIKit),
         /// it needs to be flipped upside down to work with CoreGraphics for MacOS.
         let flipUpSideDownTransform:CGAffineTransform = CGAffineTransform(scaleX: 1, y: -1)
         
-        
-        
         context.concatenate(distanceFromCenterTransform)
         context.concatenate(rotationTransformation)
-        context.concatenate(centerTextHorizontallyTransform)
+        context.concatenate(centerTextTransform)
         context.concatenate(adjustYPositionTransform)
+        //context.concatenate(lineOffsetTransform)
         context.concatenate(flipUpSideDownTransform)
         
         let ctFont = defaultFont()
@@ -149,7 +161,7 @@ public class CrossPlatformClockFaceView {
             // very rough math for figuring out the width of each "label"
             // i.e. a single digit is simply the text size passed in.
             // the double digits are narrow for the "1" and then wider for the second digit
-            let x = basePoint.x + CGFloat(i) * 1.5 * (textSize.width / CGFloat(glyphs.count))
+            let x = basePoint.x + CGFloat(i) * 0.9 * (textSize.width / CGFloat(glyphs.count))
             let y = basePoint.y
             points[i] = CGPoint(x: x, y: y)
         }
@@ -162,6 +174,7 @@ public class CrossPlatformClockFaceView {
         context.setFillColor(self.fontColor)
         
         context.showGlyphs(glyphs, at: points)
+        //CTLineDraw(ctLine, context)
         
         context.restoreGState()
     }
@@ -269,15 +282,19 @@ public class CrossPlatformClockFaceView {
             dictionaryAttributes[kCTFontFamilyNameKey as String] = fontFamilyNameString
             dictionaryAttributes[kCTFontSizeAttribute as String] = fontSize
             let attributedString = CFAttributedStringCreate(kCFAllocatorDefault, textString as CFString, dictionaryAttributes as CFDictionary)!
+            
             let line = CTLineCreateWithAttributedString(attributedString)
             let textPosition = CTLineGetImageBounds(line, context)
+            let lineOffset = textPosition.origin.x
             let textSize : CGSize = textPosition.size
             
             let angleCorrection = CGFloat(-1.0 * CGFloat(hour) * viewModel.rotationEachHour)
             let textBaseCenterPoint = CGPoint(x: hourMarkProximalPoint.x,
                                               y: hourMarkProximalPoint.y + (1 * textSize.height) + self.clockFacePadding)
             
-            self.drawWithBasePoint(
+            self.drawHourLabel(
+                ctLine: line,
+                lineOffset: lineOffset,
                 text: textString,
                 textSize: textSize,
                 basePoint: textBaseCenterPoint,

@@ -254,6 +254,24 @@ public class CrossPlatformTimeRangeSliderControl {
         }
     }
     
+    public var hourMarkLineLength: CGFloat = 5 {
+        willSet {
+            self.clockFaceView?.hourMarkLineLength = newValue
+        }
+    }
+    
+    public var hourMarkLineWidth : CGFloat = 2 {
+        willSet {
+            self.clockFaceView?.hourMarkLineWidth = newValue
+        }
+    }
+    
+    public var minuteMarkLineWidth : CGFloat = 2 {
+        willSet {
+            self.clockFaceView?.minuteMarkLineWidth = newValue
+        }
+    }
+    
     //MARK: - initialization
     public init(_frame: CGRect,
                 _ringWidth: CGFloat,

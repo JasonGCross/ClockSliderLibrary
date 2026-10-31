@@ -257,6 +257,24 @@ class TimeRangeSliderControl: NSControl {
         }
     }
     
+    var hourMarkLineLength: CGFloat = 5 {
+        willSet {
+            self.underlyingTimeRangeSliderControl?.hourMarkLineLength = newValue
+        }
+    }
+    
+    var hourMarkLineWidth : CGFloat = 2 {
+        willSet {
+            self.underlyingTimeRangeSliderControl?.hourMarkLineWidth = newValue
+        }
+    }
+    
+    var minuteMarkLineWidth : CGFloat = 1 {
+        willSet {
+            self.underlyingTimeRangeSliderControl?.minuteMarkLineWidth = newValue
+        }
+    }
+    
     //MARK: - initialization
     override init(frame: CGRect) {
         fatalError("init(coder:) has not been implemented")
